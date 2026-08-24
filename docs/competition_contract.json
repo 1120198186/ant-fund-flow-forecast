@@ -1,0 +1,34 @@
+{
+  "competition_id": 231573,
+  "name": "资金流入流出预测-挑战Baseline",
+  "task": "forecast_daily_aggregate_purchase_and_redeem",
+  "history_cutoff": "2014-08-31",
+  "external_data_cutoff": "2014-08-31",
+  "forecast": {
+    "start": "2014-09-01",
+    "end": "2014-09-30",
+    "rows": 30,
+    "columns": [
+      "report_date",
+      "purchase",
+      "redeem"
+    ],
+    "header": false,
+    "delimiter": ",",
+    "amount_unit": "cent",
+    "amount_type": "non_negative_integer"
+  },
+  "evaluation": {
+    "daily_error": "absolute_relative_error",
+    "purchase_weight": 0.45,
+    "redeem_weight": 0.55,
+    "zero_score_threshold": 0.3,
+    "official_error_to_score_mapping_public": false,
+    "zero_target_handling_public": false
+  },
+  "live_season_checked_at": "2026-08-22",
+  "live_season_end": "2027-05-06T23:59:59+08:00",
+  "season_end_flag": false,
+  "submit_availability_after_login_verified": false
+}
+

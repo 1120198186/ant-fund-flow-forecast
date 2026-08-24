@@ -1,0 +1,6 @@
+file,bytes,line_count,data_rows,has_header,sha256,note
+comp_predict_table.csv,84,3,3,false,3feab0724a02f3fdf3e4ddb255d11aa66a2f2911904e80f4c5ac99ab9e893e7a,"Supplied file is only 20140901-20140903; official submission requires 30 dates."
+mfd_bank_shibor.csv,19516,295,294,true,b6808b36290262921db2bfeb9b97887aa0fbf061b789a85533fbd1708de478b3,
+mfd_day_share_interest.csv,9760,428,427,true,1bad7036a0aad3b90ef8d699795d7b1015b89f22408e0e638e125b2f1887599d,
+user_balance_table.csv,157761201,2840422,2840421,true,0ffa2b34e770786b2d0c571ea5007c08e4140003a640e94d9e595ef83d8da996,
+user_profile_table.csv,746033,28042,28041,true,647c30abcc6937484f13e194c6b269b1ac65d9f06e1967189ab2c68a7e9f37cc,

@@ -1,0 +1,20 @@
+{
+  "split_id": "holdout_2014_08_v1",
+  "status": "active",
+  "unit": "calendar_day",
+  "training_window": {
+    "start": "2013-07-01",
+    "end": "2014-08-01"
+  },
+  "holdout_window": {
+    "start": "2014-08-02",
+    "end": "2014-08-31"
+  },
+  "targets": [
+    "total_purchase_amt",
+    "total_redeem_amt"
+  ],
+  "aggregation": "sum_by_report_date",
+  "source": "data/raw/official/user_balance_table.csv",
+  "notes": "A 30-day forward holdout matching the official 2014-09-01 through 2014-09-30 forecast length."
+}

@@ -1,0 +1,13 @@
+{
+  "status": "passed_with_verification_limit",
+  "validation": "passed",
+  "package": "passed",
+  "verification": "structural_only",
+  "counts": {
+    "blocks": 12,
+    "charts": 4,
+    "tables": 3,
+    "metric_groups": 1
+  },
+  "browser_limit": "No compatible Chromium headless-shell was available for pixel-level verification."
+}

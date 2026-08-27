@@ -1,0 +1,2002 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "直接特征与目标关联分析",
+    "description": "人口属性、支付宝收益、SHIBOR 和交易分量与资金流目标的分层关联分析。",
+    "generatedAt": "2026-08-24T03:35:22.347298Z",
+    "cards": [
+      {
+        "id": "analysis_metrics",
+        "dataset": "metrics",
+        "sourceId": "demographic_sql",
+        "description": "分析样本与直接效应上限。",
+        "metrics": [
+          {
+            "label": "用户",
+            "field": "users",
+            "format": "number"
+          },
+          {
+            "label": "日期",
+            "field": "dates",
+            "format": "number"
+          },
+          {
+            "label": "城市最大 eta²",
+            "field": "city_max_eta2",
+            "format": "number"
+          },
+          {
+            "label": "性别最大 eta²",
+            "field": "sex_max_eta2",
+            "format": "number"
+          },
+          {
+            "label": "滞后利率变化最大相关",
+            "field": "max_lagged_rate_change_corr",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "demographic_chart",
+        "title": "人口属性与主要交易目标的效应量",
+        "subtitle": "用户粒度；目标为自首次出现后的日均金额 log1p；eta²。",
+        "headerMarkdown": "城市为小效应，性别和星座几乎没有直接解释力。",
+        "type": "bar",
+        "dataset": "demographic",
+        "sourceId": "demographic_sql",
+        "valueFormat": "number",
+        "encodings": {
+          "x": {
+            "field": "label",
+            "type": "nominal",
+            "label": "特征 / 目标"
+          },
+          "y": {
+            "field": "eta_squared",
+            "type": "quantitative",
+            "label": "eta²"
+          },
+          "color": {
+            "field": "feature",
+            "type": "nominal",
+            "label": "人口属性"
+          }
+        }
+      },
+      {
+        "id": "rate_short_chart",
+        "title": "利率短期变化与目标变化",
+        "subtitle": "427 日；一日利率变化与目标 log1p 一日变化的 Pearson 相关。",
+        "headerMarkdown": "原始水平相关受共同趋势影响，差分结果更接近短期关系。",
+        "type": "bar",
+        "dataset": "rate_short",
+        "sourceId": "rate_sql",
+        "valueFormat": "number",
+        "encodings": {
+          "x": {
+            "field": "label",
+            "type": "nominal",
+            "label": "利率 / 目标"
+          },
+          "y": {
+            "field": "diff1_corr_log_target",
+            "type": "quantitative",
+            "label": "一阶变化相关"
+          },
+          "color": {
+            "field": "target",
+            "type": "nominal",
+            "label": "目标"
+          }
+        }
+      },
+      {
+        "id": "rate_lagged_chart",
+        "title": "可预测方向的滞后利率变化相关",
+        "subtitle": "前一日利率变化与今日目标变化；绝对值最高约 0.081。",
+        "headerMarkdown": "利率当前应作为候选补充特征，而不是主导信号。",
+        "type": "bar",
+        "dataset": "rate_lagged",
+        "sourceId": "rate_sql",
+        "valueFormat": "number",
+        "encodings": {
+          "x": {
+            "field": "label",
+            "type": "nominal",
+            "label": "利率 / 目标"
+          },
+          "y": {
+            "field": "lagged_diff1_corr_log_target",
+            "type": "quantitative",
+            "label": "滞后变化相关"
+          },
+          "color": {
+            "field": "target",
+            "type": "nominal",
+            "label": "目标"
+          }
+        }
+      },
+      {
+        "id": "component_chart",
+        "title": "交易分量之间的每日相关",
+        "subtitle": "同日每日汇总 Spearman；高相关中包含严格加总关系。",
+        "headerMarkdown": "同日组成项只能解释结构，预测时必须使用滞后值。",
+        "type": "bar",
+        "dataset": "components",
+        "sourceId": "transaction_sql",
+        "valueFormat": "number",
+        "encodings": {
+          "x": {
+            "field": "label",
+            "type": "nominal",
+            "label": "交易分量对"
+          },
+          "y": {
+            "field": "daily_spearman",
+            "type": "quantitative",
+            "label": "Spearman"
+          },
+          "color": {
+            "field": "relationship_type",
+            "type": "nominal",
+            "label": "关系类型"
+          }
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "city_table",
+        "title": "城市与日均总申购",
+        "subtitle": "按用户自首次出现后的暴露天数标准化。",
+        "dataset": "city_purchase",
+        "sourceId": "group_sql",
+        "defaultSort": {
+          "field": "amount_mean",
+          "direction": "desc"
+        },
+        "columns": [
+          {
+            "field": "feature_value",
+            "label": "城市代码",
+            "type": "text"
+          },
+          {
+            "field": "users",
+            "label": "用户",
+            "format": "number"
+          },
+          {
+            "field": "amount_mean",
+            "label": "日均申购",
+            "format": "number"
+          },
+          {
+            "field": "active_day_rate_mean",
+            "label": "交易日占比",
+            "format": "percent"
+          },
+          {
+            "field": "positive_day_amount_mean",
+            "label": "发生交易后的均额",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "combination_table",
+        "title": "人口属性组合效应",
+        "subtitle": "组合提升有限，三阶组合仅作为后续验证项。",
+        "dataset": "combinations",
+        "sourceId": "combination_sql",
+        "defaultSort": {
+          "field": "eta_squared",
+          "direction": "desc"
+        },
+        "columns": [
+          {
+            "field": "feature",
+            "label": "组合",
+            "type": "text"
+          },
+          {
+            "field": "target",
+            "label": "目标",
+            "type": "text"
+          },
+          {
+            "field": "eta_squared",
+            "label": "eta²",
+            "format": "number"
+          },
+          {
+            "field": "raw_groups",
+            "label": "分组数",
+            "format": "number"
+          },
+          {
+            "field": "effect_label",
+            "label": "效应",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "catalog_table",
+        "title": "候选特征数量",
+        "subtitle": "完整公式、粒度和泄漏规则见 FEATURE_COMBINATIONS.md。",
+        "dataset": "catalog_counts",
+        "sourceId": "catalog_sql",
+        "columns": [
+          {
+            "field": "priority",
+            "label": "优先级",
+            "type": "text"
+          },
+          {
+            "field": "family",
+            "label": "特征族",
+            "type": "text"
+          },
+          {
+            "field": "feature_count",
+            "label": "数量",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "demographic_sql",
+        "label": "Demographic association evidence",
+        "path": "data/derived/d005_direct_feature_analysis_v1/demographic_associations.csv"
+      },
+      {
+        "id": "group_sql",
+        "label": "Demographic group summary",
+        "path": "data/derived/d005_direct_feature_analysis_v1/demographic_group_summary.csv"
+      },
+      {
+        "id": "combination_sql",
+        "label": "Demographic combination evidence",
+        "path": "data/derived/d005_direct_feature_analysis_v1/demographic_combination_associations.csv"
+      },
+      {
+        "id": "rate_sql",
+        "label": "Rate association evidence",
+        "path": "data/derived/d005_direct_feature_analysis_v1/rate_associations.csv"
+      },
+      {
+        "id": "transaction_sql",
+        "label": "Transaction-component evidence",
+        "path": "data/derived/d005_direct_feature_analysis_v1/transaction_component_associations.csv"
+      },
+      {
+        "id": "catalog_sql",
+        "label": "Feature combination catalog",
+        "path": "data/derived/d005_direct_feature_analysis_v1/feature_combination_catalog.csv"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "summary",
+        "type": "markdown",
+        "body": "## 结论\n\n直接特征中，**城市**有稳定但较小的用户行为差异；**性别和星座**的直接解释力接近零。利率原始水平与资金量的高相关主要受共同时间趋势影响，转为变化量并滞后后信号明显减弱。交易分量的高相关多数来自业务加总关系，适合做结构分析，但不能作为同日预测输入。"
+      },
+      {
+        "id": "metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "analysis_metrics"
+        ]
+      },
+      {
+        "id": "demo",
+        "type": "chart",
+        "chartId": "demographic_chart"
+      },
+      {
+        "id": "city",
+        "type": "table",
+        "tableId": "city_table"
+      },
+      {
+        "id": "combo",
+        "type": "table",
+        "tableId": "combination_table"
+      },
+      {
+        "id": "rate_short",
+        "type": "chart",
+        "chartId": "rate_short_chart"
+      },
+      {
+        "id": "rate_lagged",
+        "type": "chart",
+        "chartId": "rate_lagged_chart"
+      },
+      {
+        "id": "component",
+        "type": "chart",
+        "chartId": "component_chart"
+      },
+      {
+        "id": "interpretation",
+        "type": "markdown",
+        "body": "## 如何解释\n\n- `direct_purchase_amt = purchase_bal_amt + purchase_bank_amt`，`total_redeem_amt = consume_amt + transfer_amt` 等是严格等式，高相关不是独立预测信号。\n- `mfd_daily_yield` 与 SHIBOR 口径不同，不直接做利差；利差只使用七日年化收益率。\n- 人口属性使用用户粒度效应量；利率使用 427 个日期样本，避免将每日利率复制到用户行虚增样本量。\n- 本轮全时期用户统计仅用于描述，正式模型必须在每个滚动训练折内重算。"
+      },
+      {
+        "id": "catalog",
+        "type": "table",
+        "tableId": "catalog_table"
+      },
+      {
+        "id": "priority",
+        "type": "markdown",
+        "body": "## 特征优先级\n\n**P0**：原始人口类别、两两人口组合、利率滞后与变化、七日收益率与 SHIBOR 利差、目标历史滞后/滚动、滞后的交易构成比例。\n\n**P1**：利率波动与滚动状态、分群历史、人口组与利率环境交互、三阶人口组合。\n\n**暂不使用**：同日交易组成项、全量目标编码、用户 ID 高维交叉、全部数值多项式组合。"
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## 下一步建议\n\n不要按全时期相关系数直接删特征。下一阶段应先实现 P0 的折内、滞后特征生成器，再以六个滚动窗口逐族加入：人口属性 → 历史行为 → 利率 → 利差/交互。只有能稳定改善中位数和最差窗口误差的特征族才保留。"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-24T03:35:22.347298Z",
+    "status": "ready",
+    "datasets": {
+      "metrics": [
+        {
+          "users": 28041,
+          "dates": 427,
+          "city_max_eta2": 0.0172153249918478,
+          "sex_max_eta2": 0.0009373676451392,
+          "constellation_max_eta2": 0.0008118102474825,
+          "max_lagged_rate_change_corr": 0.0814273303342194
+        }
+      ],
+      "demographic": [
+        {
+          "feature": "city",
+          "target": "total_purchase_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0172153249918478,
+          "effect_label": "small",
+          "users": 28041,
+          "groups": 7,
+          "analysis_grain": "user",
+          "label": "city / total_purchase_amt"
+        },
+        {
+          "feature": "city",
+          "target": "direct_purchase_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0172110645574031,
+          "effect_label": "small",
+          "users": 28041,
+          "groups": 7,
+          "analysis_grain": "user",
+          "label": "city / direct_purchase_amt"
+        },
+        {
+          "feature": "city",
+          "target": "total_redeem_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0154121802093661,
+          "effect_label": "small",
+          "users": 28041,
+          "groups": 7,
+          "analysis_grain": "user",
+          "label": "city / total_redeem_amt"
+        },
+        {
+          "feature": "city",
+          "target": "purchase_bank_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0145237585388182,
+          "effect_label": "small",
+          "users": 28041,
+          "groups": 7,
+          "analysis_grain": "user",
+          "label": "city / purchase_bank_amt"
+        },
+        {
+          "feature": "city",
+          "target": "transfer_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0117481788565427,
+          "effect_label": "small",
+          "users": 28041,
+          "groups": 7,
+          "analysis_grain": "user",
+          "label": "city / transfer_amt"
+        },
+        {
+          "feature": "constellation",
+          "target": "total_redeem_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0006904720943866,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 12,
+          "analysis_grain": "user",
+          "label": "constellation / total_redeem_amt"
+        },
+        {
+          "feature": "constellation",
+          "target": "direct_purchase_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0006746351954997,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 12,
+          "analysis_grain": "user",
+          "label": "constellation / direct_purchase_amt"
+        },
+        {
+          "feature": "constellation",
+          "target": "total_purchase_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0006745599217857,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 12,
+          "analysis_grain": "user",
+          "label": "constellation / total_purchase_amt"
+        },
+        {
+          "feature": "constellation",
+          "target": "transfer_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0006363356420131,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 12,
+          "analysis_grain": "user",
+          "label": "constellation / transfer_amt"
+        },
+        {
+          "feature": "constellation",
+          "target": "purchase_bank_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0005217382309355,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 12,
+          "analysis_grain": "user",
+          "label": "constellation / purchase_bank_amt"
+        },
+        {
+          "feature": "sex",
+          "target": "transfer_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 0.0004659883174093,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 2,
+          "analysis_grain": "user",
+          "label": "sex / transfer_amt"
+        },
+        {
+          "feature": "sex",
+          "target": "total_redeem_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 2.292656253827593e-05,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 2,
+          "analysis_grain": "user",
+          "label": "sex / total_redeem_amt"
+        },
+        {
+          "feature": "sex",
+          "target": "direct_purchase_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 1.5203995473763092e-05,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 2,
+          "analysis_grain": "user",
+          "label": "sex / direct_purchase_amt"
+        },
+        {
+          "feature": "sex",
+          "target": "purchase_bank_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 1.503857044229624e-05,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 2,
+          "analysis_grain": "user",
+          "label": "sex / purchase_bank_amt"
+        },
+        {
+          "feature": "sex",
+          "target": "total_purchase_amt",
+          "metric": "log1p_amount_per_exposure_day",
+          "eta_squared": 1.4814905582427722e-05,
+          "effect_label": "negligible",
+          "users": 28041,
+          "groups": 2,
+          "analysis_grain": "user",
+          "label": "sex / total_purchase_amt"
+        }
+      ],
+      "rate_short": [
+        {
+          "feature": "mfd_daily_yield",
+          "target": "total_purchase_amt",
+          "pearson_raw": 0.4351398703837754,
+          "pearson_log_target": 0.3400884362843844,
+          "spearman": 0.3224890344743185,
+          "residual_corr_log_target": 0.7258796528375951,
+          "lag1_spearman": 0.31903235733202,
+          "lag7_spearman": 0.3517165359254528,
+          "diff1_corr_log_target": 0.169225293622805,
+          "diff7_corr_log_target": 0.2397883504429087,
+          "lagged_diff1_corr_log_target": 0.0243499711116638,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3224890344743185,
+          "predictor_safe_abs_lag1": 0.31903235733202,
+          "short_run_abs_diff1": 0.169225293622805,
+          "predictor_safe_abs_lagged_diff1": 0.0243499711116638,
+          "label": "mfd_daily_yield / total_purchase_amt"
+        },
+        {
+          "feature": "mfd_daily_yield",
+          "target": "direct_purchase_amt",
+          "pearson_raw": 0.436200453876261,
+          "pearson_log_target": 0.3405489863447132,
+          "spearman": 0.3230157897098495,
+          "residual_corr_log_target": 0.7233651886781689,
+          "lag1_spearman": 0.3195822336777523,
+          "lag7_spearman": 0.3518493518059561,
+          "diff1_corr_log_target": 0.1687953843637132,
+          "diff7_corr_log_target": 0.2399109221694954,
+          "lagged_diff1_corr_log_target": 0.0245126553949689,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3230157897098495,
+          "predictor_safe_abs_lag1": 0.3195822336777523,
+          "short_run_abs_diff1": 0.1687953843637132,
+          "predictor_safe_abs_lagged_diff1": 0.0245126553949689,
+          "label": "mfd_daily_yield / direct_purchase_amt"
+        },
+        {
+          "feature": "mfd_daily_yield",
+          "target": "purchase_bank_amt",
+          "pearson_raw": 0.4609441499707076,
+          "pearson_log_target": 0.3563134663233533,
+          "spearman": 0.3351711580739895,
+          "residual_corr_log_target": 0.7944697368681808,
+          "lag1_spearman": 0.3336982618553297,
+          "lag7_spearman": 0.3725550236352518,
+          "diff1_corr_log_target": 0.1424527037920596,
+          "diff7_corr_log_target": 0.240466313447935,
+          "lagged_diff1_corr_log_target": 0.0345597731230725,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3351711580739895,
+          "predictor_safe_abs_lag1": 0.3336982618553297,
+          "short_run_abs_diff1": 0.1424527037920596,
+          "predictor_safe_abs_lagged_diff1": 0.0345597731230725,
+          "label": "mfd_daily_yield / purchase_bank_amt"
+        },
+        {
+          "feature": "mfd_daily_yield",
+          "target": "total_redeem_amt",
+          "pearson_raw": 0.0478008743367803,
+          "pearson_log_target": 0.1354397522450436,
+          "spearman": 0.0559841783843862,
+          "residual_corr_log_target": 0.5523864851850564,
+          "lag1_spearman": 0.0464072352395982,
+          "lag7_spearman": 0.0990736011349865,
+          "diff1_corr_log_target": 0.1397314914184415,
+          "diff7_corr_log_target": 0.1316869683607442,
+          "lagged_diff1_corr_log_target": -0.0727336333655044,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.0559841783843862,
+          "predictor_safe_abs_lag1": 0.0464072352395982,
+          "short_run_abs_diff1": 0.1397314914184415,
+          "predictor_safe_abs_lagged_diff1": 0.0727336333655044,
+          "label": "mfd_daily_yield / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_1_M",
+          "target": "purchase_bank_amt",
+          "pearson_raw": 0.0434540284733757,
+          "pearson_log_target": -0.0258282460861785,
+          "spearman": -0.1547909299632936,
+          "residual_corr_log_target": 0.4646548341329771,
+          "lag1_spearman": -0.1501680825034826,
+          "lag7_spearman": -0.0844441244764769,
+          "diff1_corr_log_target": 0.1060697260208531,
+          "diff7_corr_log_target": 0.0723270282142005,
+          "lagged_diff1_corr_log_target": 0.0515245328297063,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.1547909299632936,
+          "predictor_safe_abs_lag1": 0.1501680825034826,
+          "short_run_abs_diff1": 0.1060697260208531,
+          "predictor_safe_abs_lagged_diff1": 0.0515245328297063,
+          "label": "Interest_1_M / purchase_bank_amt"
+        },
+        {
+          "feature": "mfd_daily_yield",
+          "target": "transfer_amt",
+          "pearson_raw": 0.0823956571412926,
+          "pearson_log_target": 0.1394930903935673,
+          "spearman": 0.0860792810172774,
+          "residual_corr_log_target": 0.513985469415004,
+          "lag1_spearman": 0.0793557327422692,
+          "lag7_spearman": 0.1328994573256855,
+          "diff1_corr_log_target": 0.1009851909187819,
+          "diff7_corr_log_target": 0.0950040825135359,
+          "lagged_diff1_corr_log_target": -0.0404259810599411,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.0860792810172774,
+          "predictor_safe_abs_lag1": 0.0793557327422692,
+          "short_run_abs_diff1": 0.1009851909187819,
+          "predictor_safe_abs_lagged_diff1": 0.0404259810599411,
+          "label": "mfd_daily_yield / transfer_amt"
+        },
+        {
+          "feature": "mfd_7daily_yield",
+          "target": "total_purchase_amt",
+          "pearson_raw": 0.4268141852581495,
+          "pearson_log_target": 0.3121686975642517,
+          "spearman": 0.3057481837702069,
+          "residual_corr_log_target": 0.6995762810570079,
+          "lag1_spearman": 0.3084403697015708,
+          "lag7_spearman": 0.3390214736806471,
+          "diff1_corr_log_target": 0.0784637616396855,
+          "diff7_corr_log_target": 0.089050469071323,
+          "lagged_diff1_corr_log_target": -0.0134225389383825,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3057481837702069,
+          "predictor_safe_abs_lag1": 0.3084403697015708,
+          "short_run_abs_diff1": 0.0784637616396855,
+          "predictor_safe_abs_lagged_diff1": 0.0134225389383825,
+          "label": "mfd_7daily_yield / total_purchase_amt"
+        },
+        {
+          "feature": "mfd_7daily_yield",
+          "target": "direct_purchase_amt",
+          "pearson_raw": 0.427733134525646,
+          "pearson_log_target": 0.3124818999875718,
+          "spearman": 0.3061169520202879,
+          "residual_corr_log_target": 0.6969773758518724,
+          "lag1_spearman": 0.3087562487512519,
+          "lag7_spearman": 0.3389153016476961,
+          "diff1_corr_log_target": 0.0782835043123194,
+          "diff7_corr_log_target": 0.0889319646193684,
+          "lagged_diff1_corr_log_target": -0.0133905037305709,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3061169520202879,
+          "predictor_safe_abs_lag1": 0.3087562487512519,
+          "short_run_abs_diff1": 0.0782835043123194,
+          "predictor_safe_abs_lagged_diff1": 0.0133905037305709,
+          "label": "mfd_7daily_yield / direct_purchase_amt"
+        },
+        {
+          "feature": "Interest_1_M",
+          "target": "total_redeem_amt",
+          "pearson_raw": -0.2643857557096589,
+          "pearson_log_target": -0.1507618710224822,
+          "spearman": -0.3100671629407059,
+          "residual_corr_log_target": 0.3611807651525817,
+          "lag1_spearman": -0.3025751431741046,
+          "lag7_spearman": -0.2957840743942987,
+          "diff1_corr_log_target": 0.0762995912473279,
+          "diff7_corr_log_target": 0.1836127747120713,
+          "lagged_diff1_corr_log_target": 0.0035984564118069,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3100671629407059,
+          "predictor_safe_abs_lag1": 0.3025751431741046,
+          "short_run_abs_diff1": 0.0762995912473279,
+          "predictor_safe_abs_lagged_diff1": 0.0035984564118069,
+          "label": "Interest_1_M / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_2_W",
+          "target": "purchase_bank_amt",
+          "pearson_raw": -0.0212791398198387,
+          "pearson_log_target": -0.0629485081044867,
+          "spearman": -0.1666097964222937,
+          "residual_corr_log_target": 0.2725765282678888,
+          "lag1_spearman": -0.1546324541834378,
+          "lag7_spearman": -0.0863979171653136,
+          "diff1_corr_log_target": 0.0740591503768554,
+          "diff7_corr_log_target": 0.0320048113708665,
+          "lagged_diff1_corr_log_target": 0.0226776047048785,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.1666097964222937,
+          "predictor_safe_abs_lag1": 0.1546324541834378,
+          "short_run_abs_diff1": 0.0740591503768554,
+          "predictor_safe_abs_lagged_diff1": 0.0226776047048785,
+          "label": "Interest_2_W / purchase_bank_amt"
+        },
+        {
+          "feature": "mfd_7daily_yield",
+          "target": "purchase_bank_amt",
+          "pearson_raw": 0.4602146827171571,
+          "pearson_log_target": 0.3338050735050501,
+          "spearman": 0.3230871505364019,
+          "residual_corr_log_target": 0.774140551143799,
+          "lag1_spearman": 0.3266142030650905,
+          "lag7_spearman": 0.3582723826117772,
+          "diff1_corr_log_target": 0.0650872200204148,
+          "diff7_corr_log_target": 0.1404650772270856,
+          "lagged_diff1_corr_log_target": 0.0164162437827308,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3230871505364019,
+          "predictor_safe_abs_lag1": 0.3266142030650905,
+          "short_run_abs_diff1": 0.0650872200204148,
+          "predictor_safe_abs_lagged_diff1": 0.0164162437827308,
+          "label": "mfd_7daily_yield / purchase_bank_amt"
+        },
+        {
+          "feature": "Interest_O_N",
+          "target": "transfer_amt",
+          "pearson_raw": -0.4214079699780272,
+          "pearson_log_target": -0.3591251433527806,
+          "spearman": -0.4691309310951218,
+          "residual_corr_log_target": -0.0990408345690004,
+          "lag1_spearman": -0.4769774279533752,
+          "lag7_spearman": -0.4854436892706535,
+          "diff1_corr_log_target": 0.0636604569221844,
+          "diff7_corr_log_target": -0.0158622308983261,
+          "lagged_diff1_corr_log_target": 0.0216869054169997,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.4691309310951218,
+          "predictor_safe_abs_lag1": 0.4769774279533752,
+          "short_run_abs_diff1": 0.0636604569221844,
+          "predictor_safe_abs_lagged_diff1": 0.0216869054169997,
+          "label": "Interest_O_N / transfer_amt"
+        },
+        {
+          "feature": "Interest_O_N",
+          "target": "total_redeem_amt",
+          "pearson_raw": -0.4322452222887215,
+          "pearson_log_target": -0.3576058564297895,
+          "spearman": -0.4725118094118188,
+          "residual_corr_log_target": -0.0804261111305473,
+          "lag1_spearman": -0.4801233309345426,
+          "lag7_spearman": -0.4857591356344695,
+          "diff1_corr_log_target": 0.061145941298719,
+          "diff7_corr_log_target": -0.0494211228874146,
+          "lagged_diff1_corr_log_target": 0.0242018444664497,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.4725118094118188,
+          "predictor_safe_abs_lag1": 0.4801233309345426,
+          "short_run_abs_diff1": 0.061145941298719,
+          "predictor_safe_abs_lagged_diff1": 0.0242018444664497,
+          "label": "Interest_O_N / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_O_N",
+          "target": "purchase_bank_amt",
+          "pearson_raw": -0.2092335485508504,
+          "pearson_log_target": -0.2619891461881339,
+          "spearman": -0.4098857937740018,
+          "residual_corr_log_target": 0.0466271612467864,
+          "lag1_spearman": -0.4042787634900753,
+          "lag7_spearman": -0.35478872092856,
+          "diff1_corr_log_target": 0.0597359795222195,
+          "diff7_corr_log_target": -0.0381684505946391,
+          "lagged_diff1_corr_log_target": 0.0814273303342194,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.4098857937740018,
+          "predictor_safe_abs_lag1": 0.4042787634900753,
+          "short_run_abs_diff1": 0.0597359795222195,
+          "predictor_safe_abs_lagged_diff1": 0.0814273303342194,
+          "label": "Interest_O_N / purchase_bank_amt"
+        },
+        {
+          "feature": "Interest_2_W",
+          "target": "transfer_amt",
+          "pearson_raw": -0.2423615227426635,
+          "pearson_log_target": -0.1547215083734081,
+          "spearman": -0.2420547284460014,
+          "residual_corr_log_target": 0.1617583222558187,
+          "lag1_spearman": -0.2477645988369934,
+          "lag7_spearman": -0.2818811465184513,
+          "diff1_corr_log_target": 0.0587324579332524,
+          "diff7_corr_log_target": 0.1403908600926319,
+          "lagged_diff1_corr_log_target": -0.0059402866849541,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.2420547284460014,
+          "predictor_safe_abs_lag1": 0.2477645988369934,
+          "short_run_abs_diff1": 0.0587324579332524,
+          "predictor_safe_abs_lagged_diff1": 0.0059402866849541,
+          "label": "Interest_2_W / transfer_amt"
+        },
+        {
+          "feature": "Interest_2_W",
+          "target": "total_redeem_amt",
+          "pearson_raw": -0.2622127440327059,
+          "pearson_log_target": -0.1597301741760681,
+          "spearman": -0.2547348403904191,
+          "residual_corr_log_target": 0.1786281505548279,
+          "lag1_spearman": -0.2577911516982212,
+          "lag7_spearman": -0.2883008879879443,
+          "diff1_corr_log_target": 0.0580802803650787,
+          "diff7_corr_log_target": 0.1160231155634643,
+          "lagged_diff1_corr_log_target": -0.008542973239293,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.2547348403904191,
+          "predictor_safe_abs_lag1": 0.2577911516982212,
+          "short_run_abs_diff1": 0.0580802803650787,
+          "predictor_safe_abs_lagged_diff1": 0.008542973239293,
+          "label": "Interest_2_W / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_1_M",
+          "target": "direct_purchase_amt",
+          "pearson_raw": 0.0154059442126435,
+          "pearson_log_target": -0.0423520836553605,
+          "spearman": -0.1528618177278795,
+          "residual_corr_log_target": 0.3903146383849583,
+          "lag1_spearman": -0.1457106159860416,
+          "lag7_spearman": -0.0911624036397792,
+          "diff1_corr_log_target": 0.0576547729145198,
+          "diff7_corr_log_target": 0.070301947426324,
+          "lagged_diff1_corr_log_target": 0.0333852064023232,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.1528618177278795,
+          "predictor_safe_abs_lag1": 0.1457106159860416,
+          "short_run_abs_diff1": 0.0576547729145198,
+          "predictor_safe_abs_lagged_diff1": 0.0333852064023232,
+          "label": "Interest_1_M / direct_purchase_amt"
+        },
+        {
+          "feature": "Interest_1_M",
+          "target": "total_purchase_amt",
+          "pearson_raw": 0.0125624046051451,
+          "pearson_log_target": -0.0438704036722475,
+          "spearman": -0.154914163172691,
+          "residual_corr_log_target": 0.3908016330568468,
+          "lag1_spearman": -0.1478152461495994,
+          "lag7_spearman": -0.0935835919209688,
+          "diff1_corr_log_target": 0.0575808700000231,
+          "diff7_corr_log_target": 0.0697132096458992,
+          "lagged_diff1_corr_log_target": 0.0328842205225546,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.154914163172691,
+          "predictor_safe_abs_lag1": 0.1478152461495994,
+          "short_run_abs_diff1": 0.0575808700000231,
+          "predictor_safe_abs_lagged_diff1": 0.0328842205225546,
+          "label": "Interest_1_M / total_purchase_amt"
+        },
+        {
+          "feature": "Interest_3_M",
+          "target": "total_purchase_amt",
+          "pearson_raw": 0.6008748004426001,
+          "pearson_log_target": 0.5718887629733733,
+          "spearman": 0.7022355455379866,
+          "residual_corr_log_target": 0.6510962509627432,
+          "lag1_spearman": 0.706115723398995,
+          "lag7_spearman": 0.7305130992195497,
+          "diff1_corr_log_target": -0.0565831227443569,
+          "diff7_corr_log_target": -0.0435122605322798,
+          "lagged_diff1_corr_log_target": 0.0310510717771984,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7022355455379866,
+          "predictor_safe_abs_lag1": 0.706115723398995,
+          "short_run_abs_diff1": 0.0565831227443569,
+          "predictor_safe_abs_lagged_diff1": 0.0310510717771984,
+          "label": "Interest_3_M / total_purchase_amt"
+        },
+        {
+          "feature": "Interest_3_M",
+          "target": "direct_purchase_amt",
+          "pearson_raw": 0.59956729098798,
+          "pearson_log_target": 0.5707863582059306,
+          "spearman": 0.7011738285767053,
+          "residual_corr_log_target": 0.648113199061433,
+          "lag1_spearman": 0.7049888840837604,
+          "lag7_spearman": 0.7291023136487838,
+          "diff1_corr_log_target": -0.0565165595440283,
+          "diff7_corr_log_target": -0.043386813705608,
+          "lagged_diff1_corr_log_target": 0.0310617994793085,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7011738285767053,
+          "predictor_safe_abs_lag1": 0.7049888840837604,
+          "short_run_abs_diff1": 0.0565165595440283,
+          "predictor_safe_abs_lagged_diff1": 0.0310617994793085,
+          "label": "Interest_3_M / direct_purchase_amt"
+        }
+      ],
+      "rate_lagged": [
+        {
+          "feature": "Interest_O_N",
+          "target": "purchase_bank_amt",
+          "pearson_raw": -0.2092335485508504,
+          "pearson_log_target": -0.2619891461881339,
+          "spearman": -0.4098857937740018,
+          "residual_corr_log_target": 0.0466271612467864,
+          "lag1_spearman": -0.4042787634900753,
+          "lag7_spearman": -0.35478872092856,
+          "diff1_corr_log_target": 0.0597359795222195,
+          "diff7_corr_log_target": -0.0381684505946391,
+          "lagged_diff1_corr_log_target": 0.0814273303342194,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.4098857937740018,
+          "predictor_safe_abs_lag1": 0.4042787634900753,
+          "short_run_abs_diff1": 0.0597359795222195,
+          "predictor_safe_abs_lagged_diff1": 0.0814273303342194,
+          "label": "Interest_O_N / purchase_bank_amt"
+        },
+        {
+          "feature": "Interest_1_Y",
+          "target": "total_redeem_amt",
+          "pearson_raw": 0.7867941420543928,
+          "pearson_log_target": 0.8156079534682243,
+          "spearman": 0.767239889405735,
+          "residual_corr_log_target": 0.3595443825616247,
+          "lag1_spearman": 0.771534982933234,
+          "lag7_spearman": 0.7729414448946301,
+          "diff1_corr_log_target": 0.0549727109582961,
+          "diff7_corr_log_target": 0.0043081471945865,
+          "lagged_diff1_corr_log_target": -0.0754434844361542,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.767239889405735,
+          "predictor_safe_abs_lag1": 0.771534982933234,
+          "short_run_abs_diff1": 0.0549727109582961,
+          "predictor_safe_abs_lagged_diff1": 0.0754434844361542,
+          "label": "Interest_1_Y / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_1_Y",
+          "target": "transfer_amt",
+          "pearson_raw": 0.7498197744583233,
+          "pearson_log_target": 0.7982678799875571,
+          "spearman": 0.7583703331448676,
+          "residual_corr_log_target": 0.3574520177327731,
+          "lag1_spearman": 0.7614009501976616,
+          "lag7_spearman": 0.7626225242368706,
+          "diff1_corr_log_target": 0.0537148282031307,
+          "diff7_corr_log_target": 0.0009285441938321,
+          "lagged_diff1_corr_log_target": -0.0749983329940577,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7583703331448676,
+          "predictor_safe_abs_lag1": 0.7614009501976616,
+          "short_run_abs_diff1": 0.0537148282031307,
+          "predictor_safe_abs_lagged_diff1": 0.0749983329940577,
+          "label": "Interest_1_Y / transfer_amt"
+        },
+        {
+          "feature": "mfd_daily_yield",
+          "target": "total_redeem_amt",
+          "pearson_raw": 0.0478008743367803,
+          "pearson_log_target": 0.1354397522450436,
+          "spearman": 0.0559841783843862,
+          "residual_corr_log_target": 0.5523864851850564,
+          "lag1_spearman": 0.0464072352395982,
+          "lag7_spearman": 0.0990736011349865,
+          "diff1_corr_log_target": 0.1397314914184415,
+          "diff7_corr_log_target": 0.1316869683607442,
+          "lagged_diff1_corr_log_target": -0.0727336333655044,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.0559841783843862,
+          "predictor_safe_abs_lag1": 0.0464072352395982,
+          "short_run_abs_diff1": 0.1397314914184415,
+          "predictor_safe_abs_lagged_diff1": 0.0727336333655044,
+          "label": "mfd_daily_yield / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_9_M",
+          "target": "transfer_amt",
+          "pearson_raw": 0.7495203758935329,
+          "pearson_log_target": 0.796986449678809,
+          "spearman": 0.7447721006327291,
+          "residual_corr_log_target": 0.380124315035443,
+          "lag1_spearman": 0.7451479267926782,
+          "lag7_spearman": 0.7467547217448369,
+          "diff1_corr_log_target": 0.0538746285305417,
+          "diff7_corr_log_target": 0.0023575126475652,
+          "lagged_diff1_corr_log_target": -0.0610275477031251,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7447721006327291,
+          "predictor_safe_abs_lag1": 0.7451479267926782,
+          "short_run_abs_diff1": 0.0538746285305417,
+          "predictor_safe_abs_lagged_diff1": 0.0610275477031251,
+          "label": "Interest_9_M / transfer_amt"
+        },
+        {
+          "feature": "Interest_9_M",
+          "target": "total_redeem_amt",
+          "pearson_raw": 0.7837261027655983,
+          "pearson_log_target": 0.8133159191904964,
+          "spearman": 0.7422652639974574,
+          "residual_corr_log_target": 0.3830401254098162,
+          "lag1_spearman": 0.7428896959519088,
+          "lag7_spearman": 0.7455484815493817,
+          "diff1_corr_log_target": 0.0537613703494507,
+          "diff7_corr_log_target": 0.0058284947278028,
+          "lagged_diff1_corr_log_target": -0.060655055168035,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7422652639974574,
+          "predictor_safe_abs_lag1": 0.7428896959519088,
+          "short_run_abs_diff1": 0.0537613703494507,
+          "predictor_safe_abs_lagged_diff1": 0.060655055168035,
+          "label": "Interest_9_M / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_6_M",
+          "target": "total_redeem_amt",
+          "pearson_raw": 0.7766682508464722,
+          "pearson_log_target": 0.8086497450138201,
+          "spearman": 0.7554852495286195,
+          "residual_corr_log_target": 0.4045966161351436,
+          "lag1_spearman": 0.7548378114210103,
+          "lag7_spearman": 0.7579666479322479,
+          "diff1_corr_log_target": 0.0510278894516205,
+          "diff7_corr_log_target": 0.002839320605526,
+          "lagged_diff1_corr_log_target": -0.0589305037813525,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7554852495286195,
+          "predictor_safe_abs_lag1": 0.7548378114210103,
+          "short_run_abs_diff1": 0.0510278894516205,
+          "predictor_safe_abs_lagged_diff1": 0.0589305037813525,
+          "label": "Interest_6_M / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_6_M",
+          "target": "transfer_amt",
+          "pearson_raw": 0.7451835711491565,
+          "pearson_log_target": 0.7932585895585499,
+          "spearman": 0.7586040911493028,
+          "residual_corr_log_target": 0.4002374282194304,
+          "lag1_spearman": 0.7565825409229542,
+          "lag7_spearman": 0.7584403302778282,
+          "diff1_corr_log_target": 0.0514492857871062,
+          "diff7_corr_log_target": 0.0011224879900605,
+          "lagged_diff1_corr_log_target": -0.0580513931004043,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7586040911493028,
+          "predictor_safe_abs_lag1": 0.7565825409229542,
+          "short_run_abs_diff1": 0.0514492857871062,
+          "predictor_safe_abs_lagged_diff1": 0.0580513931004043,
+          "label": "Interest_6_M / transfer_amt"
+        },
+        {
+          "feature": "mfd_7daily_yield",
+          "target": "total_redeem_amt",
+          "pearson_raw": 0.0418361650948378,
+          "pearson_log_target": 0.098239394183425,
+          "spearman": 0.0401406359571021,
+          "residual_corr_log_target": 0.5005767120265974,
+          "lag1_spearman": 0.0444618001142776,
+          "lag7_spearman": 0.0876421382146348,
+          "diff1_corr_log_target": -0.0288891737330403,
+          "diff7_corr_log_target": -0.0430823798589702,
+          "lagged_diff1_corr_log_target": -0.0521677147498062,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.0401406359571021,
+          "predictor_safe_abs_lag1": 0.0444618001142776,
+          "short_run_abs_diff1": 0.0288891737330403,
+          "predictor_safe_abs_lagged_diff1": 0.0521677147498062,
+          "label": "mfd_7daily_yield / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_1_M",
+          "target": "purchase_bank_amt",
+          "pearson_raw": 0.0434540284733757,
+          "pearson_log_target": -0.0258282460861785,
+          "spearman": -0.1547909299632936,
+          "residual_corr_log_target": 0.4646548341329771,
+          "lag1_spearman": -0.1501680825034826,
+          "lag7_spearman": -0.0844441244764769,
+          "diff1_corr_log_target": 0.1060697260208531,
+          "diff7_corr_log_target": 0.0723270282142005,
+          "lagged_diff1_corr_log_target": 0.0515245328297063,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.1547909299632936,
+          "predictor_safe_abs_lag1": 0.1501680825034826,
+          "short_run_abs_diff1": 0.1060697260208531,
+          "predictor_safe_abs_lagged_diff1": 0.0515245328297063,
+          "label": "Interest_1_M / purchase_bank_amt"
+        },
+        {
+          "feature": "Interest_O_N",
+          "target": "direct_purchase_amt",
+          "pearson_raw": -0.2390631710043029,
+          "pearson_log_target": -0.2787909285742783,
+          "spearman": -0.3958994790507589,
+          "residual_corr_log_target": -0.0119241839901424,
+          "lag1_spearman": -0.3890399203491445,
+          "lag7_spearman": -0.3400618705453362,
+          "diff1_corr_log_target": -0.0059309243951663,
+          "diff7_corr_log_target": -0.0348280235895899,
+          "lagged_diff1_corr_log_target": 0.0446939099506051,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3958994790507589,
+          "predictor_safe_abs_lag1": 0.3890399203491445,
+          "short_run_abs_diff1": 0.0059309243951663,
+          "predictor_safe_abs_lagged_diff1": 0.0446939099506051,
+          "label": "Interest_O_N / direct_purchase_amt"
+        },
+        {
+          "feature": "Interest_O_N",
+          "target": "total_purchase_amt",
+          "pearson_raw": -0.2419256408356155,
+          "pearson_log_target": -0.2800080000262967,
+          "spearman": -0.3982984167585146,
+          "residual_corr_log_target": -0.0122316125439125,
+          "lag1_spearman": -0.3915393815191915,
+          "lag7_spearman": -0.3430003404858585,
+          "diff1_corr_log_target": -0.0060809197122497,
+          "diff7_corr_log_target": -0.0347253000648933,
+          "lagged_diff1_corr_log_target": 0.0445292586405586,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.3982984167585146,
+          "predictor_safe_abs_lag1": 0.3915393815191915,
+          "short_run_abs_diff1": 0.0060809197122497,
+          "predictor_safe_abs_lagged_diff1": 0.0445292586405586,
+          "label": "Interest_O_N / total_purchase_amt"
+        },
+        {
+          "feature": "Interest_2_W",
+          "target": "direct_purchase_amt",
+          "pearson_raw": -0.0447128289498166,
+          "pearson_log_target": -0.0799125230383741,
+          "spearman": -0.1560980121357876,
+          "residual_corr_log_target": 0.2156406853444093,
+          "lag1_spearman": -0.1402305625420011,
+          "lag7_spearman": -0.0828955626561146,
+          "diff1_corr_log_target": -7.332489227538179e-05,
+          "diff7_corr_log_target": 0.0264737041977357,
+          "lagged_diff1_corr_log_target": 0.0413138868141791,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.1560980121357876,
+          "predictor_safe_abs_lag1": 0.1402305625420011,
+          "short_run_abs_diff1": 7.332489227538179e-05,
+          "predictor_safe_abs_lagged_diff1": 0.0413138868141791,
+          "label": "Interest_2_W / direct_purchase_amt"
+        },
+        {
+          "feature": "Interest_2_W",
+          "target": "total_purchase_amt",
+          "pearson_raw": -0.0471194721767342,
+          "pearson_log_target": -0.0808626353104388,
+          "spearman": -0.1581057286389422,
+          "residual_corr_log_target": 0.2160465183353287,
+          "lag1_spearman": -0.1422422063111896,
+          "lag7_spearman": -0.0852532499444603,
+          "diff1_corr_log_target": -0.0001017073992995,
+          "diff7_corr_log_target": 0.0262517387774354,
+          "lagged_diff1_corr_log_target": 0.0409286562892138,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.1581057286389422,
+          "predictor_safe_abs_lag1": 0.1422422063111896,
+          "short_run_abs_diff1": 0.0001017073992995,
+          "predictor_safe_abs_lagged_diff1": 0.0409286562892138,
+          "label": "Interest_2_W / total_purchase_amt"
+        },
+        {
+          "feature": "mfd_daily_yield",
+          "target": "transfer_amt",
+          "pearson_raw": 0.0823956571412926,
+          "pearson_log_target": 0.1394930903935673,
+          "spearman": 0.0860792810172774,
+          "residual_corr_log_target": 0.513985469415004,
+          "lag1_spearman": 0.0793557327422692,
+          "lag7_spearman": 0.1328994573256855,
+          "diff1_corr_log_target": 0.1009851909187819,
+          "diff7_corr_log_target": 0.0950040825135359,
+          "lagged_diff1_corr_log_target": -0.0404259810599411,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.0860792810172774,
+          "predictor_safe_abs_lag1": 0.0793557327422692,
+          "short_run_abs_diff1": 0.1009851909187819,
+          "predictor_safe_abs_lagged_diff1": 0.0404259810599411,
+          "label": "mfd_daily_yield / transfer_amt"
+        },
+        {
+          "feature": "Interest_1_Y",
+          "target": "purchase_bank_amt",
+          "pearson_raw": 0.6803807419692064,
+          "pearson_log_target": 0.8134202171237183,
+          "spearman": 0.791818938633313,
+          "residual_corr_log_target": 0.5031000869642992,
+          "lag1_spearman": 0.788261794595598,
+          "lag7_spearman": 0.7711411970868433,
+          "diff1_corr_log_target": 0.0348312588938401,
+          "diff7_corr_log_target": 0.0052416407527527,
+          "lagged_diff1_corr_log_target": -0.0402970396295368,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.791818938633313,
+          "predictor_safe_abs_lag1": 0.788261794595598,
+          "short_run_abs_diff1": 0.0348312588938401,
+          "predictor_safe_abs_lagged_diff1": 0.0402970396295368,
+          "label": "Interest_1_Y / purchase_bank_amt"
+        },
+        {
+          "feature": "Interest_3_M",
+          "target": "total_redeem_amt",
+          "pearson_raw": 0.383070162394572,
+          "pearson_log_target": 0.4409963604142512,
+          "spearman": 0.5492293920476612,
+          "residual_corr_log_target": 0.5085738313822901,
+          "lag1_spearman": 0.5549730223229206,
+          "lag7_spearman": 0.5850843565938749,
+          "diff1_corr_log_target": 0.0064404929339984,
+          "diff7_corr_log_target": -0.0060249632596788,
+          "lagged_diff1_corr_log_target": 0.0402626779532178,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.5492293920476612,
+          "predictor_safe_abs_lag1": 0.5549730223229206,
+          "short_run_abs_diff1": 0.0064404929339984,
+          "predictor_safe_abs_lagged_diff1": 0.0402626779532178,
+          "label": "Interest_3_M / total_redeem_amt"
+        },
+        {
+          "feature": "Interest_3_M",
+          "target": "transfer_amt",
+          "pearson_raw": 0.4001351163211825,
+          "pearson_log_target": 0.4417528849245489,
+          "spearman": 0.5650427130466628,
+          "residual_corr_log_target": 0.4876610451283831,
+          "lag1_spearman": 0.569988330932292,
+          "lag7_spearman": 0.5983148980049554,
+          "diff1_corr_log_target": 0.0200732904712239,
+          "diff7_corr_log_target": 7.007151787476935e-05,
+          "lagged_diff1_corr_log_target": 0.03952392417511,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.5650427130466628,
+          "predictor_safe_abs_lag1": 0.569988330932292,
+          "short_run_abs_diff1": 0.0200732904712239,
+          "predictor_safe_abs_lagged_diff1": 0.03952392417511,
+          "label": "Interest_3_M / transfer_amt"
+        },
+        {
+          "feature": "Interest_9_M",
+          "target": "purchase_bank_amt",
+          "pearson_raw": 0.6879777413090385,
+          "pearson_log_target": 0.8161712057387277,
+          "spearman": 0.7689343329840823,
+          "residual_corr_log_target": 0.522882605139072,
+          "lag1_spearman": 0.7633892865695417,
+          "lag7_spearman": 0.7406612749889316,
+          "diff1_corr_log_target": 0.0360473381097765,
+          "diff7_corr_log_target": 0.0022897599959658,
+          "lagged_diff1_corr_log_target": -0.0368361236898825,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.7689343329840823,
+          "predictor_safe_abs_lag1": 0.7633892865695417,
+          "short_run_abs_diff1": 0.0360473381097765,
+          "predictor_safe_abs_lagged_diff1": 0.0368361236898825,
+          "label": "Interest_9_M / purchase_bank_amt"
+        },
+        {
+          "feature": "mfd_7daily_yield",
+          "target": "transfer_amt",
+          "pearson_raw": 0.0797299352926106,
+          "pearson_log_target": 0.1049023152752273,
+          "spearman": 0.072900589251296,
+          "residual_corr_log_target": 0.4707355662451746,
+          "lag1_spearman": 0.0782433182175686,
+          "lag7_spearman": 0.1218620080233351,
+          "diff1_corr_log_target": -0.0289832208004925,
+          "diff7_corr_log_target": -0.0293151754268939,
+          "lagged_diff1_corr_log_target": -0.0356290192838096,
+          "days": 427,
+          "analysis_grain": "date",
+          "direct_abs_spearman": 0.072900589251296,
+          "predictor_safe_abs_lag1": 0.0782433182175686,
+          "short_run_abs_diff1": 0.0289832208004925,
+          "predictor_safe_abs_lagged_diff1": 0.0356290192838096,
+          "label": "mfd_7daily_yield / transfer_amt"
+        }
+      ],
+      "components": [
+        {
+          "left": "total_purchase_amt",
+          "right": "direct_purchase_amt",
+          "relationship_type": "mechanical_component_relationship",
+          "daily_spearman": 0.999973180588048,
+          "daily_log_pearson": 0.9999844126294536,
+          "user_spearman": 0.9999271148284976,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9999844126294536,
+          "label": "total_purchase_amt / direct_purchase_amt"
+        },
+        {
+          "left": "total_redeem_amt",
+          "right": "transfer_amt",
+          "relationship_type": "mechanical_component_relationship",
+          "daily_spearman": 0.9925039743594092,
+          "daily_log_pearson": 0.9948972608363006,
+          "user_spearman": 0.8930735637676684,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9948972608363006,
+          "label": "total_redeem_amt / transfer_amt"
+        },
+        {
+          "left": "transfer_amt",
+          "right": "tftocard_amt",
+          "relationship_type": "mechanical_component_relationship",
+          "daily_spearman": 0.9887524644744226,
+          "daily_log_pearson": 0.7579714992980133,
+          "user_spearman": 0.8828409991796001,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9887524644744226,
+          "label": "transfer_amt / tftocard_amt"
+        },
+        {
+          "left": "total_redeem_amt",
+          "right": "tftocard_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.9845804701934744,
+          "daily_log_pearson": 0.7757497036279535,
+          "user_spearman": 0.795256181994707,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9845804701934744,
+          "label": "total_redeem_amt / tftocard_amt"
+        },
+        {
+          "left": "total_purchase_amt",
+          "right": "purchase_bank_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.9690844623432336,
+          "daily_log_pearson": 0.9644007931666492,
+          "user_spearman": 0.9160462295239086,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9690844623432336,
+          "label": "total_purchase_amt / purchase_bank_amt"
+        },
+        {
+          "left": "direct_purchase_amt",
+          "right": "purchase_bank_amt",
+          "relationship_type": "mechanical_component_relationship",
+          "daily_spearman": 0.9686602840576476,
+          "daily_log_pearson": 0.9636766034204384,
+          "user_spearman": 0.9161352004471228,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9686602840576476,
+          "label": "direct_purchase_amt / purchase_bank_amt"
+        },
+        {
+          "left": "total_purchase_amt",
+          "right": "tBalance",
+          "relationship_type": "balance_behavior_relationship",
+          "daily_spearman": 0.7064487430173195,
+          "daily_log_pearson": 0.8474029666762104,
+          "user_spearman": 0.9674389922097232,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9674389922097232,
+          "label": "total_purchase_amt / tBalance"
+        },
+        {
+          "left": "direct_purchase_amt",
+          "right": "tBalance",
+          "relationship_type": "balance_behavior_relationship",
+          "daily_spearman": 0.7039553083785385,
+          "daily_log_pearson": 0.8447577636312155,
+          "user_spearman": 0.9670862974618776,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9670862974618776,
+          "label": "direct_purchase_amt / tBalance"
+        },
+        {
+          "left": "total_purchase_amt",
+          "right": "yBalance",
+          "relationship_type": "balance_behavior_relationship",
+          "daily_spearman": 0.7009347335738038,
+          "daily_log_pearson": 0.8434895305772118,
+          "user_spearman": 0.9658957569205976,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9658957569205976,
+          "label": "total_purchase_amt / yBalance"
+        },
+        {
+          "left": "direct_purchase_amt",
+          "right": "yBalance",
+          "relationship_type": "balance_behavior_relationship",
+          "daily_spearman": 0.6984252689416721,
+          "daily_log_pearson": 0.8408259849534158,
+          "user_spearman": 0.9655410206384024,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9655410206384024,
+          "label": "direct_purchase_amt / yBalance"
+        },
+        {
+          "left": "total_purchase_amt",
+          "right": "total_redeem_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.8483877063514841,
+          "daily_log_pearson": 0.8924435649021505,
+          "user_spearman": 0.9438504149446776,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9438504149446776,
+          "label": "total_purchase_amt / total_redeem_amt"
+        },
+        {
+          "left": "direct_purchase_amt",
+          "right": "total_redeem_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.8470917430429058,
+          "daily_log_pearson": 0.891214071346935,
+          "user_spearman": 0.9438386085100062,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9438386085100062,
+          "label": "direct_purchase_amt / total_redeem_amt"
+        },
+        {
+          "left": "total_redeem_amt",
+          "right": "consume_amt",
+          "relationship_type": "mechanical_component_relationship",
+          "daily_spearman": 0.8891095924405017,
+          "daily_log_pearson": 0.93083995491762,
+          "user_spearman": 0.8147070161737495,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.93083995491762,
+          "label": "total_redeem_amt / consume_amt"
+        },
+        {
+          "left": "total_redeem_amt",
+          "right": "yBalance",
+          "relationship_type": "balance_behavior_relationship",
+          "daily_spearman": 0.8326813955588903,
+          "daily_log_pearson": 0.919064786946756,
+          "user_spearman": 0.8950635172830623,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.919064786946756,
+          "label": "total_redeem_amt / yBalance"
+        },
+        {
+          "left": "total_redeem_amt",
+          "right": "tBalance",
+          "relationship_type": "balance_behavior_relationship",
+          "daily_spearman": 0.8261148012635334,
+          "daily_log_pearson": 0.9185207010744988,
+          "user_spearman": 0.8946601513301938,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9185207010744988,
+          "label": "total_redeem_amt / tBalance"
+        },
+        {
+          "left": "total_purchase_amt",
+          "right": "share_amt",
+          "relationship_type": "mechanical_component_relationship",
+          "daily_spearman": 0.7635290831861091,
+          "daily_log_pearson": 0.8588215765568906,
+          "user_spearman": 0.9158424583190896,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9158424583190896,
+          "label": "total_purchase_amt / share_amt"
+        },
+        {
+          "left": "direct_purchase_amt",
+          "right": "share_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.7609880209709305,
+          "daily_log_pearson": 0.8562155177780078,
+          "user_spearman": 0.9154398279235454,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9154398279235454,
+          "label": "direct_purchase_amt / share_amt"
+        },
+        {
+          "left": "share_amt",
+          "right": "total_redeem_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.8217711354691655,
+          "daily_log_pearson": 0.9151652831914492,
+          "user_spearman": 0.8517829985295476,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9151652831914492,
+          "label": "share_amt / total_redeem_amt"
+        },
+        {
+          "left": "purchase_bank_amt",
+          "right": "total_redeem_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.861882186330793,
+          "daily_log_pearson": 0.9117500409071853,
+          "user_spearman": 0.8741256610776615,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9117500409071853,
+          "label": "purchase_bank_amt / total_redeem_amt"
+        },
+        {
+          "left": "purchase_bank_amt",
+          "right": "share_amt",
+          "relationship_type": "behavioral_flow_relationship",
+          "daily_spearman": 0.7924018756325296,
+          "daily_log_pearson": 0.9085813571240576,
+          "user_spearman": 0.8279425319300949,
+          "prediction_use": "descriptive_only_same_day; use lagged form for forecasting",
+          "max_abs_correlation": 0.9085813571240576,
+          "label": "purchase_bank_amt / share_amt"
+        }
+      ],
+      "city_purchase": [
+        {
+          "feature": "city",
+          "feature_value": "6301949",
+          "target": "total_purchase_amt",
+          "users": 3243,
+          "amount_mean": 17429.54844853924,
+          "amount_median": 227.625,
+          "amount_p90": 39052.36159227186,
+          "active_day_rate_mean": 0.3285500090896411,
+          "positive_day_amount_mean": 30712.850389312007,
+          "positive_day_amount_median": 2649.355670103093
+        },
+        {
+          "feature": "city",
+          "feature_value": "6281949",
+          "target": "total_purchase_amt",
+          "users": 6307,
+          "amount_mean": 16566.579800831078,
+          "amount_median": 184.2546583850932,
+          "amount_p90": 43270.748979591845,
+          "active_day_rate_mean": 0.3381542794987801,
+          "positive_day_amount_mean": 29243.899842383205,
+          "positive_day_amount_median": 2007.4
+        },
+        {
+          "feature": "city",
+          "feature_value": "6081949",
+          "target": "total_purchase_amt",
+          "users": 4003,
+          "amount_mean": 14692.961541379142,
+          "amount_median": 8.854166666666666,
+          "amount_p90": 36401.96085679319,
+          "active_day_rate_mean": 0.284440674514186,
+          "positive_day_amount_mean": 31995.955697415717,
+          "positive_day_amount_median": 212.9375
+        },
+        {
+          "feature": "city",
+          "feature_value": "6412149",
+          "target": "total_purchase_amt",
+          "users": 4791,
+          "amount_mean": 10928.921274763788,
+          "amount_median": 8.32,
+          "amount_p90": 24385.78064516129,
+          "active_day_rate_mean": 0.2462319203238709,
+          "positive_day_amount_mean": 22080.96965604373,
+          "positive_day_amount_median": 293.55882352941177
+        },
+        {
+          "feature": "city",
+          "feature_value": "6411949",
+          "target": "total_purchase_amt",
+          "users": 4803,
+          "amount_mean": 9084.78568588984,
+          "amount_median": 7.6923076923076925,
+          "amount_p90": 17168.75286443562,
+          "active_day_rate_mean": 0.2298530828230408,
+          "positive_day_amount_mean": 25929.631197895316,
+          "positive_day_amount_median": 302.0
+        },
+        {
+          "feature": "city",
+          "feature_value": "6481949",
+          "target": "total_purchase_amt",
+          "users": 2929,
+          "amount_mean": 8915.739540219898,
+          "amount_median": 0.2512562814070351,
+          "amount_p90": 17052.746318501457,
+          "active_day_rate_mean": 0.2083299450734492,
+          "positive_day_amount_mean": 17620.368638495627,
+          "positive_day_amount_median": 34.66804979253112
+        },
+        {
+          "feature": "city",
+          "feature_value": "6581949",
+          "target": "total_purchase_amt",
+          "users": 1965,
+          "amount_mean": 8670.748662312662,
+          "amount_median": 0.0,
+          "amount_p90": 15576.393144560372,
+          "active_day_rate_mean": 0.2139241874471681,
+          "positive_day_amount_mean": 17803.17174780758,
+          "positive_day_amount_median": 0.0
+        }
+      ],
+      "combinations": [
+        {
+          "feature": "sex_x_city_x_constellation",
+          "components": "sex+city+constellation",
+          "target": "total_purchase_amt",
+          "eta_squared": 0.0234466882263714,
+          "effect_label": "small",
+          "raw_groups": 168,
+          "groups_after_min_50_pooling": 168,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city_x_constellation",
+          "components": "sex+city+constellation",
+          "target": "direct_purchase_amt",
+          "eta_squared": 0.0234353911757128,
+          "effect_label": "small",
+          "raw_groups": 168,
+          "groups_after_min_50_pooling": 168,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city_x_constellation",
+          "components": "sex+city+constellation",
+          "target": "total_redeem_amt",
+          "eta_squared": 0.0218515749933345,
+          "effect_label": "small",
+          "raw_groups": 168,
+          "groups_after_min_50_pooling": 168,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city_x_constellation",
+          "components": "sex+city+constellation",
+          "target": "purchase_bank_amt",
+          "eta_squared": 0.0199025012836416,
+          "effect_label": "small",
+          "raw_groups": 168,
+          "groups_after_min_50_pooling": 168,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "city_x_constellation",
+          "components": "city+constellation",
+          "target": "total_purchase_amt",
+          "eta_squared": 0.0196283572345998,
+          "effect_label": "small",
+          "raw_groups": 84,
+          "groups_after_min_50_pooling": 84,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "city_x_constellation",
+          "components": "city+constellation",
+          "target": "direct_purchase_amt",
+          "eta_squared": 0.019622951360163,
+          "effect_label": "small",
+          "raw_groups": 84,
+          "groups_after_min_50_pooling": 84,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city_x_constellation",
+          "components": "sex+city+constellation",
+          "target": "transfer_amt",
+          "eta_squared": 0.0182526353456004,
+          "effect_label": "small",
+          "raw_groups": 168,
+          "groups_after_min_50_pooling": 168,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "city_x_constellation",
+          "components": "city+constellation",
+          "target": "total_redeem_amt",
+          "eta_squared": 0.0178822913003922,
+          "effect_label": "small",
+          "raw_groups": 84,
+          "groups_after_min_50_pooling": 84,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city",
+          "components": "sex+city",
+          "target": "total_purchase_amt",
+          "eta_squared": 0.0178012939187599,
+          "effect_label": "small",
+          "raw_groups": 14,
+          "groups_after_min_50_pooling": 14,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city",
+          "components": "sex+city",
+          "target": "direct_purchase_amt",
+          "eta_squared": 0.0177971347261592,
+          "effect_label": "small",
+          "raw_groups": 14,
+          "groups_after_min_50_pooling": 14,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "city_x_constellation",
+          "components": "city+constellation",
+          "target": "purchase_bank_amt",
+          "eta_squared": 0.0166753314188858,
+          "effect_label": "small",
+          "raw_groups": 84,
+          "groups_after_min_50_pooling": 84,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city",
+          "components": "sex+city",
+          "target": "total_redeem_amt",
+          "eta_squared": 0.0160693303887326,
+          "effect_label": "small",
+          "raw_groups": 14,
+          "groups_after_min_50_pooling": 14,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city",
+          "components": "sex+city",
+          "target": "purchase_bank_amt",
+          "eta_squared": 0.014945889057456,
+          "effect_label": "small",
+          "raw_groups": 14,
+          "groups_after_min_50_pooling": 14,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "city_x_constellation",
+          "components": "city+constellation",
+          "target": "transfer_amt",
+          "eta_squared": 0.0142500513666485,
+          "effect_label": "small",
+          "raw_groups": 84,
+          "groups_after_min_50_pooling": 84,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_city",
+          "components": "sex+city",
+          "target": "transfer_amt",
+          "eta_squared": 0.0127662277231039,
+          "effect_label": "small",
+          "raw_groups": 14,
+          "groups_after_min_50_pooling": 14,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_constellation",
+          "components": "sex+constellation",
+          "target": "transfer_amt",
+          "eta_squared": 0.0017286296314546,
+          "effect_label": "weak",
+          "raw_groups": 24,
+          "groups_after_min_50_pooling": 24,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_constellation",
+          "components": "sex+constellation",
+          "target": "total_redeem_amt",
+          "eta_squared": 0.0012311611011368,
+          "effect_label": "weak",
+          "raw_groups": 24,
+          "groups_after_min_50_pooling": 24,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_constellation",
+          "components": "sex+constellation",
+          "target": "direct_purchase_amt",
+          "eta_squared": 0.0010838307341038,
+          "effect_label": "weak",
+          "raw_groups": 24,
+          "groups_after_min_50_pooling": 24,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_constellation",
+          "components": "sex+constellation",
+          "target": "total_purchase_amt",
+          "eta_squared": 0.0010837980044677,
+          "effect_label": "weak",
+          "raw_groups": 24,
+          "groups_after_min_50_pooling": 24,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        },
+        {
+          "feature": "sex_x_constellation",
+          "components": "sex+constellation",
+          "target": "purchase_bank_amt",
+          "eta_squared": 0.0009582652871377,
+          "effect_label": "negligible",
+          "raw_groups": 24,
+          "groups_after_min_50_pooling": 24,
+          "minimum_group_users": 50,
+          "analysis_grain": "user"
+        }
+      ],
+      "catalog_counts": [
+        {
+          "priority": "P0",
+          "family": "behavior_composition",
+          "feature_count": 8
+        },
+        {
+          "priority": "P0",
+          "family": "demographic_cross",
+          "feature_count": 3
+        },
+        {
+          "priority": "P0",
+          "family": "rate_change",
+          "feature_count": 20
+        },
+        {
+          "priority": "P0",
+          "family": "rate_lag",
+          "feature_count": 20
+        },
+        {
+          "priority": "P0",
+          "family": "rate_spread_curve",
+          "feature_count": 8
+        },
+        {
+          "priority": "P0",
+          "family": "raw_demographic",
+          "feature_count": 3
+        },
+        {
+          "priority": "P0",
+          "family": "target_history",
+          "feature_count": 35
+        },
+        {
+          "priority": "P1",
+          "family": "cross_domain_interaction",
+          "feature_count": 4
+        },
+        {
+          "priority": "P1",
+          "family": "demographic_cross",
+          "feature_count": 1
+        },
+        {
+          "priority": "P1",
+          "family": "rate_rolling",
+          "feature_count": 30
+        },
+        {
+          "priority": "P1",
+          "family": "rate_volatility",
+          "feature_count": 20
+        },
+        {
+          "priority": "P1",
+          "family": "segment_history",
+          "feature_count": 15
+        },
+        {
+          "priority": "P2_NOT_NOW",
+          "family": "defer_or_reject",
+          "feature_count": 4
+        }
+      ]
+    },
+    "accessIssues": []
+  },
+  "sources": [
+    {
+      "id": "demographic_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d005_direct_feature_analysis_v1/demographic_associations.csv', header = true)",
+        "description": "Demographic association evidence",
+        "executed_at": "2026-08-24T03:35:22.347298Z"
+      }
+    },
+    {
+      "id": "group_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d005_direct_feature_analysis_v1/demographic_group_summary.csv', header = true)",
+        "description": "Demographic group summary",
+        "executed_at": "2026-08-24T03:35:22.347298Z"
+      }
+    },
+    {
+      "id": "combination_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d005_direct_feature_analysis_v1/demographic_combination_associations.csv', header = true)",
+        "description": "Demographic combination evidence",
+        "executed_at": "2026-08-24T03:35:22.347298Z"
+      }
+    },
+    {
+      "id": "rate_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d005_direct_feature_analysis_v1/rate_associations.csv', header = true)",
+        "description": "Rate association evidence",
+        "executed_at": "2026-08-24T03:35:22.347298Z"
+      }
+    },
+    {
+      "id": "transaction_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d005_direct_feature_analysis_v1/transaction_component_associations.csv', header = true)",
+        "description": "Transaction-component evidence",
+        "executed_at": "2026-08-24T03:35:22.347298Z"
+      }
+    },
+    {
+      "id": "catalog_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d005_direct_feature_analysis_v1/feature_combination_catalog.csv', header = true)",
+        "description": "Feature combination catalog",
+        "executed_at": "2026-08-24T03:35:22.347298Z"
+      }
+    }
+  ],
+  "package_info": {
+    "originUrl": "artifact://direct-feature-analysis",
+    "controls": {
+      "edit": false,
+      "refresh": false
+    }
+  }
+}

@@ -1,0 +1,15 @@
+check,value,unit
+rows,2840421,count
+columns_loaded,4,count
+unique_users,28041,count
+date_min,2013-07-01,date
+date_max,2014-08-31,date
+distinct_dates,427,count
+expected_calendar_dates,427,count
+duplicate_user_date_rows,0,count
+null_user_id,0,count
+null_report_date,0,count
+null_purchase,0,count
+null_redeem,0,count
+negative_purchase_rows,0,count
+negative_redeem_rows,0,count

@@ -1,0 +1,14 @@
+﻿check_id,dimension,status,severity_if_failed,metric_value,threshold,details
+types,schema,PASS,CRITICAL,0,0 type mismatches,Frozen fields match date/integer/numeric/categorical families.
+domain_constraints,validity,PASS,HIGH,0,"0 invalid IDs, values, enums, or rates",Values satisfy the frozen business domains.
+primary_keys,keys,PASS,CRITICAL,0,0 duplicate and null-key rows,Candidate keys are unique in all four structured source tables.
+structural_nulls,missingness,PASS,INFO,2666682,all-four null iff consume_amt=0; no partial nulls,Category nulls are structural and preserved in the canonical layer.
+negative_amounts,validity,PASS,HIGH,0,0 negative source amounts,Reconciliation delta is excluded because it is a quality diagnostic.
+additive_relationships,consistency,REVIEW,MEDIUM,1,0 mismatches,"One known balance equation exception is retained, not corrected."
+balance_continuity,consistency,PASS,HIGH,0,0 mismatches,yBalance reconciles to the previous observed tBalance per user.
+calendar,completeness,PASS,CRITICAL,427,427 continuous calendar days,2013-07-01 through 2014-08-31.
+anomalous_dates,anomaly,REVIEW,MEDIUM,67,review flags; not automatic deletions,Prior-only robust flags identify dates requiring context review.
+extreme_users,distribution,REVIEW,INFO,103,review only; preserve raw values,Long-tail users are retained and listed for robust modeling checks.
+cross_table_coverage,coverage,PASS,HIGH,0,0 required coverage gaps,SHIBOR non-observation dates are expected weekends/holidays and are flagged.
+time_leakage,leakage,PASS,CRITICAL,0,0 failed chronology/cutoff checks,Same-day outcomes are explicitly marked lag-before-use.
+derived_reconciliation,reconciliation,PASS,HIGH,0,0 row/total mismatches,Canonical Parquet and daily aggregates reconcile to official CSV totals.

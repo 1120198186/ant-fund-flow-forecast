@@ -1,0 +1,132 @@
+{
+  "dataset_version": "d001_feature_tests",
+  "generated_at_utc": "2026-08-24T02:09:25.779742+00:00",
+  "source": "data/raw/official/user_balance_table.csv",
+  "source_sha256": "0ffa2b34e770786b2d0c571ea5007c08e4140003a640e94d9e595ef83d8da996",
+  "generator": "scripts/run_feature_tests.py",
+  "generator_sha256": "c044bdc4d41c973db3101266d760e720caba7f078140aa9a5c20b62930b76dca",
+  "scoring_module_sha256": "1fff5f90665be4db6f30a05b59ac72441678de6ad3602cdb113ae888b00800e8",
+  "command": "python scripts/run_feature_tests.py --output data/derived/d001_feature_tests --seed 20260824 --sample-size 4000 --folds 2 --overwrite",
+  "parameters": {
+    "seed": 20260824,
+    "sample_size": 4000,
+    "folds": 2
+  },
+  "validation_definitions": [
+    {
+      "path": "validation/splits/backtest_2013_09_v1.json",
+      "sha256": "590f0bf562637f1483adc1a1fbe3142db0bed5737bfc49fb89bce1846ebd4cd9"
+    },
+    {
+      "path": "validation/splits/rolling_30d_2014_03_08_v1.json",
+      "sha256": "9e3732568218b34fbd803979b5afa56a8d1cc01d41b216bd9bb2a07290d92199"
+    },
+    {
+      "path": "validation/splits/cold_start_random_2fold_v1.json",
+      "sha256": "03ab44c8aa738d3ebce7add4db8eb3f20938f3e960c3d3a0cf07420a59221c45"
+    }
+  ],
+  "environment": {
+    "python": "3.12.13",
+    "pandas": "3.0.1",
+    "numpy": "2.3.5",
+    "matplotlib": "3.11.1"
+  },
+  "generated_files": [
+    {
+      "file": "autocorrelation.csv",
+      "bytes": 7414,
+      "sha256": "e1efefe1d759e640e271aa90e2c9a038d86fd4978e10cb4f01612b11f9d2d2a2"
+    },
+    {
+      "file": "backtest_metrics.csv",
+      "bytes": 4622,
+      "sha256": "dc926216f4fb3ce484c326ee3f26831d82dcc4b2beaa6e027c057e526d08da17"
+    },
+    {
+      "file": "backtest_predictions.csv",
+      "bytes": 80755,
+      "sha256": "8a53a833783f6aa691be9d34bbd60762a9d3436016aff15c3a2a4d4e61d6d51f"
+    },
+    {
+      "file": "cold_start_fold_summary.csv",
+      "bytes": 423,
+      "sha256": "4ecbe85b327b9f5da86d8d841606cdb3afb00efafdbbacefc45a29fd92e2ea78"
+    },
+    {
+      "file": "cold_start_user_folds.csv",
+      "bytes": 509352,
+      "sha256": "ee76ad67883f7da6ce75996b4dc68ab5aa40d2951da2aa670d00540fbb46432a"
+    },
+    {
+      "file": "daily_aggregate.csv",
+      "bytes": 13402,
+      "sha256": "2aabbe098ae3e9bad91685d3b46b0ae848781ee8d58f7ce0afddb12ff4c162bc"
+    },
+    {
+      "file": "daily_totals.png",
+      "bytes": 241376,
+      "sha256": "b5b81fb5f0d329de993cd40833474887d5f467b657f9d958b31ad0527373750c"
+    },
+    {
+      "file": "data_quality_summary.csv",
+      "bytes": 389,
+      "sha256": "3b16a23146cefff7d5d912c3c376a42553e2916900f2d531cb1761bda5cef309"
+    },
+    {
+      "file": "first_seen_user_counts.png",
+      "bytes": 50584,
+      "sha256": "fde4c26a50356938edc6629b81c4bf45c3fcfe06c7868eb151755cddd6e23ab4"
+    },
+    {
+      "file": "monthly_first_seen_users.csv",
+      "bytes": 222,
+      "sha256": "b2f691a869a82a89f05b5f07fd711ba2b394e190eaff84d624da429fbedc0de0"
+    },
+    {
+      "file": "periodicity_autocorrelation.png",
+      "bytes": 56200,
+      "sha256": "5adfb161f8debf936170aca0c513e2a83ae81b502c948cc019498be578681e24"
+    },
+    {
+      "file": "README.md",
+      "bytes": 412,
+      "sha256": "2a31026d4174d68a6f71ceb8bbf5d4de971eaa0aaf3799117dd92f6817f50c7c"
+    },
+    {
+      "file": "REPORT.md",
+      "bytes": 5454,
+      "sha256": "09cc2687ef6d0e29fc1d6cd3233eb179b2d165d2b37322d53587e6cd7f81fcd2"
+    },
+    {
+      "file": "score_curves.csv",
+      "bytes": 3687,
+      "sha256": "6da196e77df2197762619532aa5af4fc254e05725bcfac217f2e41f96d1a7493"
+    },
+    {
+      "file": "score_curves.png",
+      "bytes": 108620,
+      "sha256": "a8f501b9df07575d5f16b55d136c7ad0fedfa2c8e55002fe8e7c54e2178d08a9"
+    },
+    {
+      "file": "spectral_peaks.csv",
+      "bytes": 1063,
+      "sha256": "4440fb3b9b8bb2d6c2c9b6f8430c92fc333a8f668a9665b59e8421987bded546"
+    },
+    {
+      "file": "true_new_user_cohorts.csv",
+      "bytes": 90604,
+      "sha256": "b96d87b7377649e189e1a974c5130f0236626ba93ff52a3b9a78367fa3bff44d"
+    },
+    {
+      "file": "weekday_effects.csv",
+      "bytes": 1462,
+      "sha256": "45bbfcae58e311f9fb84abdfecef8755551ba2b16b767aadfd3a7c696e2f11e5"
+    },
+    {
+      "file": "weekday_pattern.png",
+      "bytes": 43414,
+      "sha256": "6a141e21c98cee17748456f4dfbabe28da3de913bd637b77bcf1f9a42d172e5a"
+    }
+  ]
+}

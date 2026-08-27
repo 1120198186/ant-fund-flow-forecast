@@ -1,0 +1,3233 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "官方数据质量审计",
+    "description": "资金流预测官方数据、派生层和时间边界的完整质量审计。",
+    "generatedAt": "2026-08-24T03:19:56.634607Z",
+    "cards": [
+      {
+        "id": "quality_metrics",
+        "description": "审计范围和最终状态。",
+        "dataset": "audit_metrics",
+        "sourceId": "audit_summary_sql",
+        "metrics": [
+          {
+            "label": "资金记录",
+            "field": "source_rows",
+            "format": "number"
+          },
+          {
+            "label": "用户",
+            "field": "users",
+            "format": "number"
+          },
+          {
+            "label": "自然日",
+            "field": "calendar_days",
+            "format": "number"
+          },
+          {
+            "label": "硬失败",
+            "field": "hard_failures",
+            "format": "number"
+          },
+          {
+            "label": "需复核项",
+            "field": "review_checks",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "daily_users_chart",
+        "title": "每日有记录用户数",
+        "subtitle": "427 个自然日连续，但样本规模随平台增长明显上升。",
+        "headerMarkdown": "该变化是业务规模变化，不作为脏数据删除依据。",
+        "type": "line",
+        "dataset": "daily_users",
+        "sourceId": "daily_metrics_sql",
+        "valueFormat": "number",
+        "encodings": {
+          "x": {
+            "field": "report_date",
+            "type": "temporal",
+            "label": "日期"
+          },
+          "y": {
+            "field": "users",
+            "type": "quantitative",
+            "label": "用户数"
+          },
+          "tooltip": [
+            {
+              "field": "new_users",
+              "type": "quantitative",
+              "label": "首现用户"
+            }
+          ]
+        }
+      },
+      {
+        "id": "concentration_chart",
+        "title": "长尾用户贡献率",
+        "subtitle": "Top 1% 用户贡献约 32.6% 申购和 36.7% 赎回。",
+        "headerMarkdown": "极端用户是真实业务长尾，应使用稳健建模而不是直接删除。",
+        "type": "bar",
+        "dataset": "concentration",
+        "sourceId": "concentration_sql",
+        "valueFormat": "number",
+        "encodings": {
+          "x": {
+            "field": "group",
+            "type": "nominal",
+            "label": "用户组"
+          },
+          "y": {
+            "field": "share_pct",
+            "type": "quantitative",
+            "label": "金额贡献率 (%)"
+          },
+          "color": {
+            "field": "metric",
+            "type": "nominal",
+            "label": "目标"
+          }
+        }
+      },
+      {
+        "id": "performance_chart",
+        "title": "读取性能基准",
+        "subtitle": "同机三次读取的中位耗时，越低越好。",
+        "headerMarkdown": "Parquet 同时降低存储和常用时间切片读取成本。",
+        "type": "bar",
+        "dataset": "performance",
+        "sourceId": "performance_sql",
+        "valueFormat": "number",
+        "encodings": {
+          "x": {
+            "field": "case_label",
+            "type": "nominal",
+            "label": "读取方式"
+          },
+          "y": {
+            "field": "median_seconds",
+            "type": "quantitative",
+            "label": "秒"
+          },
+          "color": {
+            "field": "format",
+            "type": "nominal",
+            "label": "格式"
+          }
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "identity_table",
+        "title": "业务加总关系",
+        "subtitle": "六条等式中仅同行余额勾稽有一条 100 分差异。",
+        "dataset": "identities",
+        "sourceId": "identities_sql",
+        "columns": [
+          {
+            "field": "relationship",
+            "label": "关系",
+            "type": "text"
+          },
+          {
+            "field": "rows_checked",
+            "label": "检查行数",
+            "format": "number"
+          },
+          {
+            "field": "mismatch_rows",
+            "label": "违例",
+            "format": "number"
+          },
+          {
+            "field": "max_abs_delta",
+            "label": "最大绝对差",
+            "format": "number"
+          },
+          {
+            "field": "status",
+            "label": "状态",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "anomaly_table",
+        "title": "优先复核的异常日期指标",
+        "subtitle": "按无未来信息的滚动及同星期稳健基线排序。",
+        "dataset": "anomalies",
+        "sourceId": "anomalies_sql",
+        "defaultSort": {
+          "field": "robust_score",
+          "direction": "desc"
+        },
+        "columns": [
+          {
+            "field": "report_date",
+            "label": "日期",
+            "type": "date"
+          },
+          {
+            "field": "metric",
+            "label": "指标",
+            "type": "text"
+          },
+          {
+            "field": "value",
+            "label": "值",
+            "format": "number"
+          },
+          {
+            "field": "robust_score",
+            "label": "稳健分数",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "leakage_table",
+        "title": "时间泄漏检查",
+        "subtitle": "数据截止、填充方向、异常阈值和验证窗口逐项检查。",
+        "dataset": "leakage",
+        "sourceId": "leakage_sql",
+        "columns": [
+          {
+            "field": "scope",
+            "label": "范围",
+            "type": "text"
+          },
+          {
+            "field": "check",
+            "label": "检查",
+            "type": "text"
+          },
+          {
+            "field": "observed",
+            "label": "观察",
+            "type": "text"
+          },
+          {
+            "field": "required",
+            "label": "要求",
+            "type": "text"
+          },
+          {
+            "field": "status",
+            "label": "状态",
+            "type": "text"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "official_balance",
+        "label": "Frozen official user balance CSV",
+        "path": "data/raw/official/user_balance_table.csv"
+      },
+      {
+        "id": "official_profile",
+        "label": "Frozen official user profile CSV",
+        "path": "data/raw/official/user_profile_table.csv"
+      },
+      {
+        "id": "canonical_layer",
+        "label": "Typed canonical Parquet layer",
+        "path": "data/derived/d003_validated_data_layer_v2/manifest.json"
+      },
+      {
+        "id": "audit_evidence",
+        "label": "Reviewed data-quality evidence package",
+        "path": "data/derived/d004_data_quality_audit_v2/manifest.json"
+      },
+      {
+        "id": "validation_splits",
+        "label": "Frozen rolling and stress-test definitions",
+        "path": "validation/splits/rolling_30d_2014_03_08_v1.json"
+      },
+      {
+        "id": "audit_summary_sql",
+        "label": "Audit summary evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/audit_summary.csv"
+      },
+      {
+        "id": "daily_metrics_sql",
+        "label": "Daily metric evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/daily_metrics.csv"
+      },
+      {
+        "id": "concentration_sql",
+        "label": "User concentration evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/user_concentration.csv"
+      },
+      {
+        "id": "identities_sql",
+        "label": "Additive relationship evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/additive_relationships.csv"
+      },
+      {
+        "id": "anomalies_sql",
+        "label": "Anomalous date evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/anomalous_dates.csv"
+      },
+      {
+        "id": "leakage_sql",
+        "label": "Leakage-check evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/leakage_audit.csv"
+      },
+      {
+        "id": "performance_sql",
+        "label": "Read benchmark evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/read_performance.csv"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "summary",
+        "type": "markdown",
+        "body": "## 技术摘要\n\n官方数据整体可用于后续建模：主键、跨表覆盖、日期完整性、金额域、派生层总额和时间截止均通过。唯一确定的源数据异常是用户 **9872** 在 **2013-08-13** 的同行余额勾稽差 **-100 分**；该值已保留并显式标记。"
+      },
+      {
+        "id": "metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "quality_metrics"
+        ]
+      },
+      {
+        "id": "findings",
+        "type": "markdown",
+        "body": "## 关键发现\n\n- 2,840,421 条资金记录、28,041 名用户，用户画像双向覆盖 100%。\n- 427 个自然日连续；基金收益全覆盖，SHIBOR 的非发布日仅做历史向前填充并保留新鲜度。\n- `category1-4` 的 93.88% 空值均为 `consume_amt=0` 时的结构性空值，不插值、不删行。\n- 相邻自然日余额连续性 2,795,780 对全部通过。\n- 异常日期和极端用户是复核清单，不是清洗删除清单。"
+      },
+      {
+        "id": "daily_chart",
+        "type": "chart",
+        "chartId": "daily_users_chart"
+      },
+      {
+        "id": "concentration",
+        "type": "chart",
+        "chartId": "concentration_chart"
+      },
+      {
+        "id": "identities",
+        "type": "table",
+        "tableId": "identity_table"
+      },
+      {
+        "id": "anomalies",
+        "type": "table",
+        "tableId": "anomaly_table"
+      },
+      {
+        "id": "scope_method",
+        "type": "markdown",
+        "body": "## 范围、定义与方法\n\n范围包括五个冻结官方 CSV、规范 Parquet 层及现有滚动验证配置。候选主键分别为 `user_id+report_date`、`user_id` 和日期键。异常日期使用只看历史的 28 日滚动中位数/MAD 与最近 8 个同星期日基线，稳健分数大于 6 才进入复核。极端阈值仅用于本审计；建模时必须在每个训练折内重新拟合。"
+      },
+      {
+        "id": "leakage",
+        "type": "table",
+        "tableId": "leakage_table"
+      },
+      {
+        "id": "performance",
+        "type": "chart",
+        "chartId": "performance_chart"
+      },
+      {
+        "id": "limits",
+        "type": "markdown",
+        "body": "## 限制与稳健性\n\n本审计能确认结构、勾稽、覆盖和时间方向，不能单凭统计异常解释业务原因。SHIBOR 的实际可用发布时间没有更细粒度时间戳，因此预测特征仍应至少滞后一天。当前滚动配置的八月窗口为 `08-02..08-31`，与其他从月初开始的窗口不一致，正式模型比较前需要锁定统一口径。性能结果来自本机三次热缓存读取中位数，只用于本项目工程取舍。"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## 下一步\n\n1. 所有模型只读取 `d003_validated_data_layer_v2`，不直接修改或覆盖官方 CSV。\n2. 同日资金、余额、收益和全量分位点不得直接作为同日预测特征；滚动统计严格按折内拟合并滞后。\n3. 在用户分析方案确定后，再由 split JSON 动态生成 cutoff 用户快照。\n4. 先锁定六个滚动窗口的统一 30 日口径，再开始版本化模型比较。"
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## 后续问题\n\n- 八月最终采用 `08-01..08-30` 还是保持 `08-02..08-31`？\n- 用户分析阶段是否需要将极端用户拆分为余额型、申购型和赎回型三类？\n- SHIBOR 与基金收益是否作为主模型特征，还是仅作为消融实验？"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-24T03:19:56.634607Z",
+    "status": "ready",
+    "datasets": {
+      "audit_metrics": [
+        {
+          "source_rows": 2840421,
+          "users": 28041,
+          "calendar_days": 427,
+          "hard_failures": 0,
+          "review_checks": 3,
+          "balance_exceptions": 1,
+          "anomaly_flags": 67
+        }
+      ],
+      "daily_users": [
+        {
+          "report_date": "2013-07-01",
+          "users": 441,
+          "new_users": 441
+        },
+        {
+          "report_date": "2013-07-02",
+          "users": 480,
+          "new_users": 67
+        },
+        {
+          "report_date": "2013-07-03",
+          "users": 499,
+          "new_users": 60
+        },
+        {
+          "report_date": "2013-07-04",
+          "users": 523,
+          "new_users": 54
+        },
+        {
+          "report_date": "2013-07-05",
+          "users": 544,
+          "new_users": 51
+        },
+        {
+          "report_date": "2013-07-06",
+          "users": 553,
+          "new_users": 41
+        },
+        {
+          "report_date": "2013-07-07",
+          "users": 566,
+          "new_users": 37
+        },
+        {
+          "report_date": "2013-07-08",
+          "users": 580,
+          "new_users": 31
+        },
+        {
+          "report_date": "2013-07-09",
+          "users": 614,
+          "new_users": 50
+        },
+        {
+          "report_date": "2013-07-10",
+          "users": 619,
+          "new_users": 38
+        },
+        {
+          "report_date": "2013-07-11",
+          "users": 658,
+          "new_users": 48
+        },
+        {
+          "report_date": "2013-07-12",
+          "users": 677,
+          "new_users": 41
+        },
+        {
+          "report_date": "2013-07-13",
+          "users": 694,
+          "new_users": 45
+        },
+        {
+          "report_date": "2013-07-14",
+          "users": 697,
+          "new_users": 34
+        },
+        {
+          "report_date": "2013-07-15",
+          "users": 714,
+          "new_users": 32
+        },
+        {
+          "report_date": "2013-07-16",
+          "users": 739,
+          "new_users": 43
+        },
+        {
+          "report_date": "2013-07-17",
+          "users": 765,
+          "new_users": 52
+        },
+        {
+          "report_date": "2013-07-18",
+          "users": 772,
+          "new_users": 33
+        },
+        {
+          "report_date": "2013-07-19",
+          "users": 788,
+          "new_users": 33
+        },
+        {
+          "report_date": "2013-07-20",
+          "users": 810,
+          "new_users": 31
+        },
+        {
+          "report_date": "2013-07-21",
+          "users": 817,
+          "new_users": 23
+        },
+        {
+          "report_date": "2013-07-22",
+          "users": 840,
+          "new_users": 32
+        },
+        {
+          "report_date": "2013-07-23",
+          "users": 869,
+          "new_users": 41
+        },
+        {
+          "report_date": "2013-07-24",
+          "users": 885,
+          "new_users": 35
+        },
+        {
+          "report_date": "2013-07-25",
+          "users": 906,
+          "new_users": 34
+        },
+        {
+          "report_date": "2013-07-26",
+          "users": 925,
+          "new_users": 36
+        },
+        {
+          "report_date": "2013-07-27",
+          "users": 918,
+          "new_users": 18
+        },
+        {
+          "report_date": "2013-07-28",
+          "users": 936,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-07-29",
+          "users": 952,
+          "new_users": 37
+        },
+        {
+          "report_date": "2013-07-30",
+          "users": 970,
+          "new_users": 31
+        },
+        {
+          "report_date": "2013-07-31",
+          "users": 977,
+          "new_users": 26
+        },
+        {
+          "report_date": "2013-08-01",
+          "users": 990,
+          "new_users": 29
+        },
+        {
+          "report_date": "2013-08-02",
+          "users": 1011,
+          "new_users": 35
+        },
+        {
+          "report_date": "2013-08-03",
+          "users": 1011,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-08-04",
+          "users": 1027,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-08-05",
+          "users": 1045,
+          "new_users": 28
+        },
+        {
+          "report_date": "2013-08-06",
+          "users": 1061,
+          "new_users": 26
+        },
+        {
+          "report_date": "2013-08-07",
+          "users": 1084,
+          "new_users": 34
+        },
+        {
+          "report_date": "2013-08-08",
+          "users": 1095,
+          "new_users": 32
+        },
+        {
+          "report_date": "2013-08-09",
+          "users": 1102,
+          "new_users": 35
+        },
+        {
+          "report_date": "2013-08-10",
+          "users": 1104,
+          "new_users": 22
+        },
+        {
+          "report_date": "2013-08-11",
+          "users": 1117,
+          "new_users": 26
+        },
+        {
+          "report_date": "2013-08-12",
+          "users": 1135,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-08-13",
+          "users": 1158,
+          "new_users": 31
+        },
+        {
+          "report_date": "2013-08-14",
+          "users": 1167,
+          "new_users": 29
+        },
+        {
+          "report_date": "2013-08-15",
+          "users": 1174,
+          "new_users": 29
+        },
+        {
+          "report_date": "2013-08-16",
+          "users": 1180,
+          "new_users": 27
+        },
+        {
+          "report_date": "2013-08-17",
+          "users": 1183,
+          "new_users": 16
+        },
+        {
+          "report_date": "2013-08-18",
+          "users": 1203,
+          "new_users": 26
+        },
+        {
+          "report_date": "2013-08-19",
+          "users": 1202,
+          "new_users": 20
+        },
+        {
+          "report_date": "2013-08-20",
+          "users": 1226,
+          "new_users": 35
+        },
+        {
+          "report_date": "2013-08-21",
+          "users": 1224,
+          "new_users": 26
+        },
+        {
+          "report_date": "2013-08-22",
+          "users": 1251,
+          "new_users": 36
+        },
+        {
+          "report_date": "2013-08-23",
+          "users": 1266,
+          "new_users": 32
+        },
+        {
+          "report_date": "2013-08-24",
+          "users": 1261,
+          "new_users": 16
+        },
+        {
+          "report_date": "2013-08-25",
+          "users": 1276,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-08-26",
+          "users": 1294,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-08-27",
+          "users": 1310,
+          "new_users": 35
+        },
+        {
+          "report_date": "2013-08-28",
+          "users": 1321,
+          "new_users": 28
+        },
+        {
+          "report_date": "2013-08-29",
+          "users": 1338,
+          "new_users": 31
+        },
+        {
+          "report_date": "2013-08-30",
+          "users": 1347,
+          "new_users": 28
+        },
+        {
+          "report_date": "2013-08-31",
+          "users": 1366,
+          "new_users": 30
+        },
+        {
+          "report_date": "2013-09-01",
+          "users": 1381,
+          "new_users": 35
+        },
+        {
+          "report_date": "2013-09-02",
+          "users": 1410,
+          "new_users": 45
+        },
+        {
+          "report_date": "2013-09-03",
+          "users": 1412,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-09-04",
+          "users": 1419,
+          "new_users": 27
+        },
+        {
+          "report_date": "2013-09-05",
+          "users": 1429,
+          "new_users": 27
+        },
+        {
+          "report_date": "2013-09-06",
+          "users": 1440,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-09-07",
+          "users": 1445,
+          "new_users": 22
+        },
+        {
+          "report_date": "2013-09-08",
+          "users": 1456,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-09-09",
+          "users": 1478,
+          "new_users": 32
+        },
+        {
+          "report_date": "2013-09-10",
+          "users": 1484,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-09-11",
+          "users": 1505,
+          "new_users": 31
+        },
+        {
+          "report_date": "2013-09-12",
+          "users": 1513,
+          "new_users": 21
+        },
+        {
+          "report_date": "2013-09-13",
+          "users": 1514,
+          "new_users": 20
+        },
+        {
+          "report_date": "2013-09-14",
+          "users": 1516,
+          "new_users": 14
+        },
+        {
+          "report_date": "2013-09-15",
+          "users": 1534,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-09-16",
+          "users": 1559,
+          "new_users": 32
+        },
+        {
+          "report_date": "2013-09-17",
+          "users": 1569,
+          "new_users": 27
+        },
+        {
+          "report_date": "2013-09-18",
+          "users": 1569,
+          "new_users": 23
+        },
+        {
+          "report_date": "2013-09-19",
+          "users": 1567,
+          "new_users": 14
+        },
+        {
+          "report_date": "2013-09-20",
+          "users": 1584,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-09-21",
+          "users": 1587,
+          "new_users": 23
+        },
+        {
+          "report_date": "2013-09-22",
+          "users": 1592,
+          "new_users": 13
+        },
+        {
+          "report_date": "2013-09-23",
+          "users": 1616,
+          "new_users": 29
+        },
+        {
+          "report_date": "2013-09-24",
+          "users": 1637,
+          "new_users": 29
+        },
+        {
+          "report_date": "2013-09-25",
+          "users": 1639,
+          "new_users": 29
+        },
+        {
+          "report_date": "2013-09-26",
+          "users": 1646,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-09-27",
+          "users": 1660,
+          "new_users": 31
+        },
+        {
+          "report_date": "2013-09-28",
+          "users": 1668,
+          "new_users": 28
+        },
+        {
+          "report_date": "2013-09-29",
+          "users": 1680,
+          "new_users": 29
+        },
+        {
+          "report_date": "2013-09-30",
+          "users": 1685,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-10-01",
+          "users": 1696,
+          "new_users": 32
+        },
+        {
+          "report_date": "2013-10-02",
+          "users": 1698,
+          "new_users": 21
+        },
+        {
+          "report_date": "2013-10-03",
+          "users": 1704,
+          "new_users": 16
+        },
+        {
+          "report_date": "2013-10-04",
+          "users": 1715,
+          "new_users": 25
+        },
+        {
+          "report_date": "2013-10-05",
+          "users": 1718,
+          "new_users": 21
+        },
+        {
+          "report_date": "2013-10-06",
+          "users": 1744,
+          "new_users": 37
+        },
+        {
+          "report_date": "2013-10-07",
+          "users": 1744,
+          "new_users": 21
+        },
+        {
+          "report_date": "2013-10-08",
+          "users": 1765,
+          "new_users": 26
+        },
+        {
+          "report_date": "2013-10-09",
+          "users": 1780,
+          "new_users": 24
+        },
+        {
+          "report_date": "2013-10-10",
+          "users": 1795,
+          "new_users": 27
+        },
+        {
+          "report_date": "2013-10-11",
+          "users": 1823,
+          "new_users": 40
+        },
+        {
+          "report_date": "2013-10-12",
+          "users": 1846,
+          "new_users": 47
+        },
+        {
+          "report_date": "2013-10-13",
+          "users": 1880,
+          "new_users": 67
+        },
+        {
+          "report_date": "2013-10-14",
+          "users": 1910,
+          "new_users": 62
+        },
+        {
+          "report_date": "2013-10-15",
+          "users": 1966,
+          "new_users": 71
+        },
+        {
+          "report_date": "2013-10-16",
+          "users": 2002,
+          "new_users": 65
+        },
+        {
+          "report_date": "2013-10-17",
+          "users": 2105,
+          "new_users": 121
+        },
+        {
+          "report_date": "2013-10-18",
+          "users": 2129,
+          "new_users": 82
+        },
+        {
+          "report_date": "2013-10-19",
+          "users": 2170,
+          "new_users": 88
+        },
+        {
+          "report_date": "2013-10-20",
+          "users": 2231,
+          "new_users": 97
+        },
+        {
+          "report_date": "2013-10-21",
+          "users": 2270,
+          "new_users": 88
+        },
+        {
+          "report_date": "2013-10-22",
+          "users": 2319,
+          "new_users": 89
+        },
+        {
+          "report_date": "2013-10-23",
+          "users": 2333,
+          "new_users": 57
+        },
+        {
+          "report_date": "2013-10-24",
+          "users": 2366,
+          "new_users": 67
+        },
+        {
+          "report_date": "2013-10-25",
+          "users": 2366,
+          "new_users": 40
+        },
+        {
+          "report_date": "2013-10-26",
+          "users": 2379,
+          "new_users": 37
+        },
+        {
+          "report_date": "2013-10-27",
+          "users": 2396,
+          "new_users": 47
+        },
+        {
+          "report_date": "2013-10-28",
+          "users": 2426,
+          "new_users": 54
+        },
+        {
+          "report_date": "2013-10-29",
+          "users": 2470,
+          "new_users": 71
+        },
+        {
+          "report_date": "2013-10-30",
+          "users": 2524,
+          "new_users": 85
+        },
+        {
+          "report_date": "2013-10-31",
+          "users": 2558,
+          "new_users": 76
+        },
+        {
+          "report_date": "2013-11-01",
+          "users": 2627,
+          "new_users": 80
+        },
+        {
+          "report_date": "2013-11-02",
+          "users": 2656,
+          "new_users": 74
+        },
+        {
+          "report_date": "2013-11-03",
+          "users": 2663,
+          "new_users": 49
+        },
+        {
+          "report_date": "2013-11-04",
+          "users": 2734,
+          "new_users": 78
+        },
+        {
+          "report_date": "2013-11-05",
+          "users": 2950,
+          "new_users": 167
+        },
+        {
+          "report_date": "2013-11-06",
+          "users": 3061,
+          "new_users": 162
+        },
+        {
+          "report_date": "2013-11-07",
+          "users": 3183,
+          "new_users": 126
+        },
+        {
+          "report_date": "2013-11-08",
+          "users": 3280,
+          "new_users": 148
+        },
+        {
+          "report_date": "2013-11-09",
+          "users": 3367,
+          "new_users": 133
+        },
+        {
+          "report_date": "2013-11-10",
+          "users": 3673,
+          "new_users": 274
+        },
+        {
+          "report_date": "2013-11-11",
+          "users": 3556,
+          "new_users": 55
+        },
+        {
+          "report_date": "2013-11-12",
+          "users": 3484,
+          "new_users": 69
+        },
+        {
+          "report_date": "2013-11-13",
+          "users": 3527,
+          "new_users": 72
+        },
+        {
+          "report_date": "2013-11-14",
+          "users": 3528,
+          "new_users": 55
+        },
+        {
+          "report_date": "2013-11-15",
+          "users": 3562,
+          "new_users": 54
+        },
+        {
+          "report_date": "2013-11-16",
+          "users": 3604,
+          "new_users": 59
+        },
+        {
+          "report_date": "2013-11-17",
+          "users": 3630,
+          "new_users": 62
+        },
+        {
+          "report_date": "2013-11-18",
+          "users": 3685,
+          "new_users": 58
+        },
+        {
+          "report_date": "2013-11-19",
+          "users": 3725,
+          "new_users": 66
+        },
+        {
+          "report_date": "2013-11-20",
+          "users": 3766,
+          "new_users": 61
+        },
+        {
+          "report_date": "2013-11-21",
+          "users": 3773,
+          "new_users": 45
+        },
+        {
+          "report_date": "2013-11-22",
+          "users": 3801,
+          "new_users": 54
+        },
+        {
+          "report_date": "2013-11-23",
+          "users": 3885,
+          "new_users": 94
+        },
+        {
+          "report_date": "2013-11-24",
+          "users": 3910,
+          "new_users": 73
+        },
+        {
+          "report_date": "2013-11-25",
+          "users": 3964,
+          "new_users": 91
+        },
+        {
+          "report_date": "2013-11-26",
+          "users": 4001,
+          "new_users": 78
+        },
+        {
+          "report_date": "2013-11-27",
+          "users": 4033,
+          "new_users": 65
+        },
+        {
+          "report_date": "2013-11-28",
+          "users": 4049,
+          "new_users": 56
+        },
+        {
+          "report_date": "2013-11-29",
+          "users": 4092,
+          "new_users": 60
+        },
+        {
+          "report_date": "2013-11-30",
+          "users": 4139,
+          "new_users": 72
+        },
+        {
+          "report_date": "2013-12-01",
+          "users": 4186,
+          "new_users": 77
+        },
+        {
+          "report_date": "2013-12-02",
+          "users": 4240,
+          "new_users": 73
+        },
+        {
+          "report_date": "2013-12-03",
+          "users": 4266,
+          "new_users": 65
+        },
+        {
+          "report_date": "2013-12-04",
+          "users": 4292,
+          "new_users": 61
+        },
+        {
+          "report_date": "2013-12-05",
+          "users": 4334,
+          "new_users": 75
+        },
+        {
+          "report_date": "2013-12-06",
+          "users": 4341,
+          "new_users": 44
+        },
+        {
+          "report_date": "2013-12-07",
+          "users": 4362,
+          "new_users": 44
+        },
+        {
+          "report_date": "2013-12-08",
+          "users": 4391,
+          "new_users": 59
+        },
+        {
+          "report_date": "2013-12-09",
+          "users": 4428,
+          "new_users": 62
+        },
+        {
+          "report_date": "2013-12-10",
+          "users": 4473,
+          "new_users": 69
+        },
+        {
+          "report_date": "2013-12-11",
+          "users": 4518,
+          "new_users": 64
+        },
+        {
+          "report_date": "2013-12-12",
+          "users": 4563,
+          "new_users": 64
+        },
+        {
+          "report_date": "2013-12-13",
+          "users": 4577,
+          "new_users": 72
+        },
+        {
+          "report_date": "2013-12-14",
+          "users": 4599,
+          "new_users": 51
+        },
+        {
+          "report_date": "2013-12-15",
+          "users": 4648,
+          "new_users": 72
+        },
+        {
+          "report_date": "2013-12-16",
+          "users": 4675,
+          "new_users": 60
+        },
+        {
+          "report_date": "2013-12-17",
+          "users": 4717,
+          "new_users": 67
+        },
+        {
+          "report_date": "2013-12-18",
+          "users": 4752,
+          "new_users": 65
+        },
+        {
+          "report_date": "2013-12-19",
+          "users": 4783,
+          "new_users": 64
+        },
+        {
+          "report_date": "2013-12-20",
+          "users": 4854,
+          "new_users": 80
+        },
+        {
+          "report_date": "2013-12-21",
+          "users": 4890,
+          "new_users": 73
+        },
+        {
+          "report_date": "2013-12-22",
+          "users": 4935,
+          "new_users": 73
+        },
+        {
+          "report_date": "2013-12-23",
+          "users": 4979,
+          "new_users": 70
+        },
+        {
+          "report_date": "2013-12-24",
+          "users": 5010,
+          "new_users": 71
+        },
+        {
+          "report_date": "2013-12-25",
+          "users": 5045,
+          "new_users": 70
+        },
+        {
+          "report_date": "2013-12-26",
+          "users": 5077,
+          "new_users": 57
+        },
+        {
+          "report_date": "2013-12-27",
+          "users": 5117,
+          "new_users": 67
+        },
+        {
+          "report_date": "2013-12-28",
+          "users": 5155,
+          "new_users": 69
+        },
+        {
+          "report_date": "2013-12-29",
+          "users": 5176,
+          "new_users": 58
+        },
+        {
+          "report_date": "2013-12-30",
+          "users": 5238,
+          "new_users": 72
+        },
+        {
+          "report_date": "2013-12-31",
+          "users": 5258,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-01-01",
+          "users": 5293,
+          "new_users": 59
+        },
+        {
+          "report_date": "2014-01-02",
+          "users": 5340,
+          "new_users": 75
+        },
+        {
+          "report_date": "2014-01-03",
+          "users": 5374,
+          "new_users": 61
+        },
+        {
+          "report_date": "2014-01-04",
+          "users": 5414,
+          "new_users": 71
+        },
+        {
+          "report_date": "2014-01-05",
+          "users": 5483,
+          "new_users": 79
+        },
+        {
+          "report_date": "2014-01-06",
+          "users": 5514,
+          "new_users": 66
+        },
+        {
+          "report_date": "2014-01-07",
+          "users": 5560,
+          "new_users": 69
+        },
+        {
+          "report_date": "2014-01-08",
+          "users": 5621,
+          "new_users": 74
+        },
+        {
+          "report_date": "2014-01-09",
+          "users": 5646,
+          "new_users": 75
+        },
+        {
+          "report_date": "2014-01-10",
+          "users": 5701,
+          "new_users": 86
+        },
+        {
+          "report_date": "2014-01-11",
+          "users": 5764,
+          "new_users": 94
+        },
+        {
+          "report_date": "2014-01-12",
+          "users": 5836,
+          "new_users": 104
+        },
+        {
+          "report_date": "2014-01-13",
+          "users": 5945,
+          "new_users": 155
+        },
+        {
+          "report_date": "2014-01-14",
+          "users": 6076,
+          "new_users": 195
+        },
+        {
+          "report_date": "2014-01-15",
+          "users": 6136,
+          "new_users": 176
+        },
+        {
+          "report_date": "2014-01-16",
+          "users": 6215,
+          "new_users": 190
+        },
+        {
+          "report_date": "2014-01-17",
+          "users": 6241,
+          "new_users": 174
+        },
+        {
+          "report_date": "2014-01-18",
+          "users": 6268,
+          "new_users": 151
+        },
+        {
+          "report_date": "2014-01-19",
+          "users": 6268,
+          "new_users": 117
+        },
+        {
+          "report_date": "2014-01-20",
+          "users": 6353,
+          "new_users": 146
+        },
+        {
+          "report_date": "2014-01-21",
+          "users": 6382,
+          "new_users": 116
+        },
+        {
+          "report_date": "2014-01-22",
+          "users": 6406,
+          "new_users": 107
+        },
+        {
+          "report_date": "2014-01-23",
+          "users": 6428,
+          "new_users": 95
+        },
+        {
+          "report_date": "2014-01-24",
+          "users": 6467,
+          "new_users": 90
+        },
+        {
+          "report_date": "2014-01-25",
+          "users": 6526,
+          "new_users": 101
+        },
+        {
+          "report_date": "2014-01-26",
+          "users": 6600,
+          "new_users": 117
+        },
+        {
+          "report_date": "2014-01-27",
+          "users": 6626,
+          "new_users": 103
+        },
+        {
+          "report_date": "2014-01-28",
+          "users": 6683,
+          "new_users": 113
+        },
+        {
+          "report_date": "2014-01-29",
+          "users": 6735,
+          "new_users": 106
+        },
+        {
+          "report_date": "2014-01-30",
+          "users": 6749,
+          "new_users": 75
+        },
+        {
+          "report_date": "2014-01-31",
+          "users": 6783,
+          "new_users": 72
+        },
+        {
+          "report_date": "2014-02-01",
+          "users": 6780,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-02-02",
+          "users": 6793,
+          "new_users": 61
+        },
+        {
+          "report_date": "2014-02-03",
+          "users": 6831,
+          "new_users": 79
+        },
+        {
+          "report_date": "2014-02-04",
+          "users": 6850,
+          "new_users": 68
+        },
+        {
+          "report_date": "2014-02-05",
+          "users": 6883,
+          "new_users": 75
+        },
+        {
+          "report_date": "2014-02-06",
+          "users": 6940,
+          "new_users": 105
+        },
+        {
+          "report_date": "2014-02-07",
+          "users": 7075,
+          "new_users": 165
+        },
+        {
+          "report_date": "2014-02-08",
+          "users": 7133,
+          "new_users": 154
+        },
+        {
+          "report_date": "2014-02-09",
+          "users": 7188,
+          "new_users": 141
+        },
+        {
+          "report_date": "2014-02-10",
+          "users": 7306,
+          "new_users": 178
+        },
+        {
+          "report_date": "2014-02-11",
+          "users": 7358,
+          "new_users": 149
+        },
+        {
+          "report_date": "2014-02-12",
+          "users": 7443,
+          "new_users": 154
+        },
+        {
+          "report_date": "2014-02-13",
+          "users": 7479,
+          "new_users": 136
+        },
+        {
+          "report_date": "2014-02-14",
+          "users": 7604,
+          "new_users": 211
+        },
+        {
+          "report_date": "2014-02-15",
+          "users": 7669,
+          "new_users": 238
+        },
+        {
+          "report_date": "2014-02-16",
+          "users": 7721,
+          "new_users": 222
+        },
+        {
+          "report_date": "2014-02-17",
+          "users": 7826,
+          "new_users": 259
+        },
+        {
+          "report_date": "2014-02-18",
+          "users": 7889,
+          "new_users": 224
+        },
+        {
+          "report_date": "2014-02-19",
+          "users": 7900,
+          "new_users": 197
+        },
+        {
+          "report_date": "2014-02-20",
+          "users": 8005,
+          "new_users": 215
+        },
+        {
+          "report_date": "2014-02-21",
+          "users": 8065,
+          "new_users": 193
+        },
+        {
+          "report_date": "2014-02-22",
+          "users": 8079,
+          "new_users": 172
+        },
+        {
+          "report_date": "2014-02-23",
+          "users": 8158,
+          "new_users": 177
+        },
+        {
+          "report_date": "2014-02-24",
+          "users": 8280,
+          "new_users": 216
+        },
+        {
+          "report_date": "2014-02-25",
+          "users": 8344,
+          "new_users": 183
+        },
+        {
+          "report_date": "2014-02-26",
+          "users": 8402,
+          "new_users": 180
+        },
+        {
+          "report_date": "2014-02-27",
+          "users": 8440,
+          "new_users": 140
+        },
+        {
+          "report_date": "2014-02-28",
+          "users": 8454,
+          "new_users": 112
+        },
+        {
+          "report_date": "2014-03-01",
+          "users": 8491,
+          "new_users": 76
+        },
+        {
+          "report_date": "2014-03-02",
+          "users": 8532,
+          "new_users": 95
+        },
+        {
+          "report_date": "2014-03-03",
+          "users": 8595,
+          "new_users": 100
+        },
+        {
+          "report_date": "2014-03-04",
+          "users": 8638,
+          "new_users": 92
+        },
+        {
+          "report_date": "2014-03-05",
+          "users": 8682,
+          "new_users": 85
+        },
+        {
+          "report_date": "2014-03-06",
+          "users": 8748,
+          "new_users": 91
+        },
+        {
+          "report_date": "2014-03-07",
+          "users": 8789,
+          "new_users": 104
+        },
+        {
+          "report_date": "2014-03-08",
+          "users": 8823,
+          "new_users": 79
+        },
+        {
+          "report_date": "2014-03-09",
+          "users": 8858,
+          "new_users": 84
+        },
+        {
+          "report_date": "2014-03-10",
+          "users": 8887,
+          "new_users": 70
+        },
+        {
+          "report_date": "2014-03-11",
+          "users": 8940,
+          "new_users": 77
+        },
+        {
+          "report_date": "2014-03-12",
+          "users": 8990,
+          "new_users": 80
+        },
+        {
+          "report_date": "2014-03-13",
+          "users": 9019,
+          "new_users": 80
+        },
+        {
+          "report_date": "2014-03-14",
+          "users": 9063,
+          "new_users": 65
+        },
+        {
+          "report_date": "2014-03-15",
+          "users": 9092,
+          "new_users": 80
+        },
+        {
+          "report_date": "2014-03-16",
+          "users": 9111,
+          "new_users": 67
+        },
+        {
+          "report_date": "2014-03-17",
+          "users": 9167,
+          "new_users": 67
+        },
+        {
+          "report_date": "2014-03-18",
+          "users": 9178,
+          "new_users": 70
+        },
+        {
+          "report_date": "2014-03-19",
+          "users": 9245,
+          "new_users": 89
+        },
+        {
+          "report_date": "2014-03-20",
+          "users": 9313,
+          "new_users": 97
+        },
+        {
+          "report_date": "2014-03-21",
+          "users": 9341,
+          "new_users": 101
+        },
+        {
+          "report_date": "2014-03-22",
+          "users": 9352,
+          "new_users": 75
+        },
+        {
+          "report_date": "2014-03-23",
+          "users": 9394,
+          "new_users": 69
+        },
+        {
+          "report_date": "2014-03-24",
+          "users": 9469,
+          "new_users": 100
+        },
+        {
+          "report_date": "2014-03-25",
+          "users": 9493,
+          "new_users": 72
+        },
+        {
+          "report_date": "2014-03-26",
+          "users": 9512,
+          "new_users": 70
+        },
+        {
+          "report_date": "2014-03-27",
+          "users": 9553,
+          "new_users": 79
+        },
+        {
+          "report_date": "2014-03-28",
+          "users": 9579,
+          "new_users": 81
+        },
+        {
+          "report_date": "2014-03-29",
+          "users": 9637,
+          "new_users": 85
+        },
+        {
+          "report_date": "2014-03-30",
+          "users": 9674,
+          "new_users": 88
+        },
+        {
+          "report_date": "2014-03-31",
+          "users": 9738,
+          "new_users": 93
+        },
+        {
+          "report_date": "2014-04-01",
+          "users": 9798,
+          "new_users": 102
+        },
+        {
+          "report_date": "2014-04-02",
+          "users": 9812,
+          "new_users": 98
+        },
+        {
+          "report_date": "2014-04-03",
+          "users": 9873,
+          "new_users": 114
+        },
+        {
+          "report_date": "2014-04-04",
+          "users": 9858,
+          "new_users": 91
+        },
+        {
+          "report_date": "2014-04-05",
+          "users": 9864,
+          "new_users": 75
+        },
+        {
+          "report_date": "2014-04-06",
+          "users": 9885,
+          "new_users": 68
+        },
+        {
+          "report_date": "2014-04-07",
+          "users": 9922,
+          "new_users": 82
+        },
+        {
+          "report_date": "2014-04-08",
+          "users": 9951,
+          "new_users": 70
+        },
+        {
+          "report_date": "2014-04-09",
+          "users": 10001,
+          "new_users": 68
+        },
+        {
+          "report_date": "2014-04-10",
+          "users": 10042,
+          "new_users": 77
+        },
+        {
+          "report_date": "2014-04-11",
+          "users": 10074,
+          "new_users": 72
+        },
+        {
+          "report_date": "2014-04-12",
+          "users": 10066,
+          "new_users": 55
+        },
+        {
+          "report_date": "2014-04-13",
+          "users": 10138,
+          "new_users": 80
+        },
+        {
+          "report_date": "2014-04-14",
+          "users": 10165,
+          "new_users": 87
+        },
+        {
+          "report_date": "2014-04-15",
+          "users": 10181,
+          "new_users": 67
+        },
+        {
+          "report_date": "2014-04-16",
+          "users": 10206,
+          "new_users": 68
+        },
+        {
+          "report_date": "2014-04-17",
+          "users": 10215,
+          "new_users": 62
+        },
+        {
+          "report_date": "2014-04-18",
+          "users": 10251,
+          "new_users": 65
+        },
+        {
+          "report_date": "2014-04-19",
+          "users": 10263,
+          "new_users": 63
+        },
+        {
+          "report_date": "2014-04-20",
+          "users": 10280,
+          "new_users": 58
+        },
+        {
+          "report_date": "2014-04-21",
+          "users": 10318,
+          "new_users": 70
+        },
+        {
+          "report_date": "2014-04-22",
+          "users": 10304,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-04-23",
+          "users": 10330,
+          "new_users": 45
+        },
+        {
+          "report_date": "2014-04-24",
+          "users": 10373,
+          "new_users": 64
+        },
+        {
+          "report_date": "2014-04-25",
+          "users": 10409,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-04-26",
+          "users": 10421,
+          "new_users": 52
+        },
+        {
+          "report_date": "2014-04-27",
+          "users": 10446,
+          "new_users": 63
+        },
+        {
+          "report_date": "2014-04-28",
+          "users": 10484,
+          "new_users": 71
+        },
+        {
+          "report_date": "2014-04-29",
+          "users": 10457,
+          "new_users": 43
+        },
+        {
+          "report_date": "2014-04-30",
+          "users": 10492,
+          "new_users": 43
+        },
+        {
+          "report_date": "2014-05-01",
+          "users": 10513,
+          "new_users": 54
+        },
+        {
+          "report_date": "2014-05-02",
+          "users": 10516,
+          "new_users": 40
+        },
+        {
+          "report_date": "2014-05-03",
+          "users": 10526,
+          "new_users": 56
+        },
+        {
+          "report_date": "2014-05-04",
+          "users": 10555,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-05-05",
+          "users": 10612,
+          "new_users": 71
+        },
+        {
+          "report_date": "2014-05-06",
+          "users": 10624,
+          "new_users": 45
+        },
+        {
+          "report_date": "2014-05-07",
+          "users": 10656,
+          "new_users": 69
+        },
+        {
+          "report_date": "2014-05-08",
+          "users": 10671,
+          "new_users": 43
+        },
+        {
+          "report_date": "2014-05-09",
+          "users": 10715,
+          "new_users": 71
+        },
+        {
+          "report_date": "2014-05-10",
+          "users": 10705,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-05-11",
+          "users": 10753,
+          "new_users": 74
+        },
+        {
+          "report_date": "2014-05-12",
+          "users": 10767,
+          "new_users": 51
+        },
+        {
+          "report_date": "2014-05-13",
+          "users": 10788,
+          "new_users": 56
+        },
+        {
+          "report_date": "2014-05-14",
+          "users": 10790,
+          "new_users": 53
+        },
+        {
+          "report_date": "2014-05-15",
+          "users": 10824,
+          "new_users": 53
+        },
+        {
+          "report_date": "2014-05-16",
+          "users": 10849,
+          "new_users": 51
+        },
+        {
+          "report_date": "2014-05-17",
+          "users": 10868,
+          "new_users": 56
+        },
+        {
+          "report_date": "2014-05-18",
+          "users": 10874,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-05-19",
+          "users": 10914,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-05-20",
+          "users": 10930,
+          "new_users": 51
+        },
+        {
+          "report_date": "2014-05-21",
+          "users": 10971,
+          "new_users": 65
+        },
+        {
+          "report_date": "2014-05-22",
+          "users": 10999,
+          "new_users": 68
+        },
+        {
+          "report_date": "2014-05-23",
+          "users": 11029,
+          "new_users": 76
+        },
+        {
+          "report_date": "2014-05-24",
+          "users": 11039,
+          "new_users": 45
+        },
+        {
+          "report_date": "2014-05-25",
+          "users": 11053,
+          "new_users": 52
+        },
+        {
+          "report_date": "2014-05-26",
+          "users": 11082,
+          "new_users": 55
+        },
+        {
+          "report_date": "2014-05-27",
+          "users": 11084,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-05-28",
+          "users": 11081,
+          "new_users": 39
+        },
+        {
+          "report_date": "2014-05-29",
+          "users": 11093,
+          "new_users": 35
+        },
+        {
+          "report_date": "2014-05-30",
+          "users": 11100,
+          "new_users": 39
+        },
+        {
+          "report_date": "2014-05-31",
+          "users": 11110,
+          "new_users": 32
+        },
+        {
+          "report_date": "2014-06-01",
+          "users": 11116,
+          "new_users": 26
+        },
+        {
+          "report_date": "2014-06-02",
+          "users": 11141,
+          "new_users": 45
+        },
+        {
+          "report_date": "2014-06-03",
+          "users": 11180,
+          "new_users": 47
+        },
+        {
+          "report_date": "2014-06-04",
+          "users": 11178,
+          "new_users": 34
+        },
+        {
+          "report_date": "2014-06-05",
+          "users": 11221,
+          "new_users": 57
+        },
+        {
+          "report_date": "2014-06-06",
+          "users": 11234,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-06-07",
+          "users": 11237,
+          "new_users": 33
+        },
+        {
+          "report_date": "2014-06-08",
+          "users": 11241,
+          "new_users": 38
+        },
+        {
+          "report_date": "2014-06-09",
+          "users": 11292,
+          "new_users": 52
+        },
+        {
+          "report_date": "2014-06-10",
+          "users": 11299,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-06-11",
+          "users": 11333,
+          "new_users": 51
+        },
+        {
+          "report_date": "2014-06-12",
+          "users": 11349,
+          "new_users": 52
+        },
+        {
+          "report_date": "2014-06-13",
+          "users": 11379,
+          "new_users": 53
+        },
+        {
+          "report_date": "2014-06-14",
+          "users": 11390,
+          "new_users": 46
+        },
+        {
+          "report_date": "2014-06-15",
+          "users": 11407,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-06-16",
+          "users": 11433,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-06-17",
+          "users": 11451,
+          "new_users": 63
+        },
+        {
+          "report_date": "2014-06-18",
+          "users": 11487,
+          "new_users": 56
+        },
+        {
+          "report_date": "2014-06-19",
+          "users": 11497,
+          "new_users": 46
+        },
+        {
+          "report_date": "2014-06-20",
+          "users": 11502,
+          "new_users": 54
+        },
+        {
+          "report_date": "2014-06-21",
+          "users": 11528,
+          "new_users": 61
+        },
+        {
+          "report_date": "2014-06-22",
+          "users": 11541,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-06-23",
+          "users": 11562,
+          "new_users": 40
+        },
+        {
+          "report_date": "2014-06-24",
+          "users": 11577,
+          "new_users": 40
+        },
+        {
+          "report_date": "2014-06-25",
+          "users": 11594,
+          "new_users": 46
+        },
+        {
+          "report_date": "2014-06-26",
+          "users": 11622,
+          "new_users": 62
+        },
+        {
+          "report_date": "2014-06-27",
+          "users": 11616,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-06-28",
+          "users": 11630,
+          "new_users": 37
+        },
+        {
+          "report_date": "2014-06-29",
+          "users": 11627,
+          "new_users": 33
+        },
+        {
+          "report_date": "2014-06-30",
+          "users": 11682,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-07-01",
+          "users": 11718,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-07-02",
+          "users": 11716,
+          "new_users": 49
+        },
+        {
+          "report_date": "2014-07-03",
+          "users": 11734,
+          "new_users": 52
+        },
+        {
+          "report_date": "2014-07-04",
+          "users": 11718,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-07-05",
+          "users": 11736,
+          "new_users": 54
+        },
+        {
+          "report_date": "2014-07-06",
+          "users": 11734,
+          "new_users": 45
+        },
+        {
+          "report_date": "2014-07-07",
+          "users": 11770,
+          "new_users": 45
+        },
+        {
+          "report_date": "2014-07-08",
+          "users": 11771,
+          "new_users": 40
+        },
+        {
+          "report_date": "2014-07-09",
+          "users": 11772,
+          "new_users": 46
+        },
+        {
+          "report_date": "2014-07-10",
+          "users": 11782,
+          "new_users": 39
+        },
+        {
+          "report_date": "2014-07-11",
+          "users": 11804,
+          "new_users": 37
+        },
+        {
+          "report_date": "2014-07-12",
+          "users": 11823,
+          "new_users": 47
+        },
+        {
+          "report_date": "2014-07-13",
+          "users": 11871,
+          "new_users": 64
+        },
+        {
+          "report_date": "2014-07-14",
+          "users": 11902,
+          "new_users": 62
+        },
+        {
+          "report_date": "2014-07-15",
+          "users": 11901,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-07-16",
+          "users": 11916,
+          "new_users": 57
+        },
+        {
+          "report_date": "2014-07-17",
+          "users": 11915,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-07-18",
+          "users": 11924,
+          "new_users": 55
+        },
+        {
+          "report_date": "2014-07-19",
+          "users": 11940,
+          "new_users": 56
+        },
+        {
+          "report_date": "2014-07-20",
+          "users": 11961,
+          "new_users": 54
+        },
+        {
+          "report_date": "2014-07-21",
+          "users": 11987,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-07-22",
+          "users": 12020,
+          "new_users": 52
+        },
+        {
+          "report_date": "2014-07-23",
+          "users": 12017,
+          "new_users": 49
+        },
+        {
+          "report_date": "2014-07-24",
+          "users": 12030,
+          "new_users": 57
+        },
+        {
+          "report_date": "2014-07-25",
+          "users": 12009,
+          "new_users": 37
+        },
+        {
+          "report_date": "2014-07-26",
+          "users": 12028,
+          "new_users": 39
+        },
+        {
+          "report_date": "2014-07-27",
+          "users": 12040,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-07-28",
+          "users": 12083,
+          "new_users": 53
+        },
+        {
+          "report_date": "2014-07-29",
+          "users": 12073,
+          "new_users": 35
+        },
+        {
+          "report_date": "2014-07-30",
+          "users": 12089,
+          "new_users": 54
+        },
+        {
+          "report_date": "2014-07-31",
+          "users": 12101,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-08-01",
+          "users": 12111,
+          "new_users": 38
+        },
+        {
+          "report_date": "2014-08-02",
+          "users": 12103,
+          "new_users": 39
+        },
+        {
+          "report_date": "2014-08-03",
+          "users": 12136,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-08-04",
+          "users": 12157,
+          "new_users": 40
+        },
+        {
+          "report_date": "2014-08-05",
+          "users": 12174,
+          "new_users": 44
+        },
+        {
+          "report_date": "2014-08-06",
+          "users": 12189,
+          "new_users": 41
+        },
+        {
+          "report_date": "2014-08-07",
+          "users": 12204,
+          "new_users": 45
+        },
+        {
+          "report_date": "2014-08-08",
+          "users": 12195,
+          "new_users": 30
+        },
+        {
+          "report_date": "2014-08-09",
+          "users": 12225,
+          "new_users": 44
+        },
+        {
+          "report_date": "2014-08-10",
+          "users": 12227,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-08-11",
+          "users": 12266,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-08-12",
+          "users": 12307,
+          "new_users": 57
+        },
+        {
+          "report_date": "2014-08-13",
+          "users": 12314,
+          "new_users": 62
+        },
+        {
+          "report_date": "2014-08-14",
+          "users": 12301,
+          "new_users": 37
+        },
+        {
+          "report_date": "2014-08-15",
+          "users": 12316,
+          "new_users": 40
+        },
+        {
+          "report_date": "2014-08-16",
+          "users": 12346,
+          "new_users": 46
+        },
+        {
+          "report_date": "2014-08-17",
+          "users": 12370,
+          "new_users": 51
+        },
+        {
+          "report_date": "2014-08-18",
+          "users": 12401,
+          "new_users": 50
+        },
+        {
+          "report_date": "2014-08-19",
+          "users": 12411,
+          "new_users": 51
+        },
+        {
+          "report_date": "2014-08-20",
+          "users": 12436,
+          "new_users": 55
+        },
+        {
+          "report_date": "2014-08-21",
+          "users": 12436,
+          "new_users": 42
+        },
+        {
+          "report_date": "2014-08-22",
+          "users": 12446,
+          "new_users": 43
+        },
+        {
+          "report_date": "2014-08-23",
+          "users": 12459,
+          "new_users": 48
+        },
+        {
+          "report_date": "2014-08-24",
+          "users": 12471,
+          "new_users": 51
+        },
+        {
+          "report_date": "2014-08-25",
+          "users": 12508,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-08-26",
+          "users": 12517,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-08-27",
+          "users": 12527,
+          "new_users": 52
+        },
+        {
+          "report_date": "2014-08-28",
+          "users": 12557,
+          "new_users": 47
+        },
+        {
+          "report_date": "2014-08-29",
+          "users": 12596,
+          "new_users": 72
+        },
+        {
+          "report_date": "2014-08-30",
+          "users": 12603,
+          "new_users": 60
+        },
+        {
+          "report_date": "2014-08-31",
+          "users": 12614,
+          "new_users": 56
+        }
+      ],
+      "concentration": [
+        {
+          "metric": "Purchase",
+          "group": "Top 0.1%",
+          "share_pct": 8.86325778863991
+        },
+        {
+          "metric": "Purchase",
+          "group": "Top 1%",
+          "share_pct": 32.62223834690711
+        },
+        {
+          "metric": "Purchase",
+          "group": "Top 5%",
+          "share_pct": 67.38546891683107
+        },
+        {
+          "metric": "Purchase",
+          "group": "Top 10%",
+          "share_pct": 84.58848395506564
+        },
+        {
+          "metric": "Redeem",
+          "group": "Top 0.1%",
+          "share_pct": 10.14026635442312
+        },
+        {
+          "metric": "Redeem",
+          "group": "Top 1%",
+          "share_pct": 36.69648867166129
+        },
+        {
+          "metric": "Redeem",
+          "group": "Top 5%",
+          "share_pct": 72.37008492716835
+        },
+        {
+          "metric": "Redeem",
+          "group": "Top 10%",
+          "share_pct": 88.0256608268119
+        }
+      ],
+      "performance": [
+        {
+          "case_label": "CSV / Full period",
+          "format": "CSV",
+          "scope": "Full period",
+          "median_seconds": 0.874622699993779,
+          "rows": 2840421
+        },
+        {
+          "case_label": "PARQUET / Full period",
+          "format": "PARQUET",
+          "scope": "Full period",
+          "median_seconds": 0.0352344999992055,
+          "rows": 2840421
+        },
+        {
+          "case_label": "CSV / August filter",
+          "format": "CSV",
+          "scope": "August filter",
+          "median_seconds": 0.9347286999982316,
+          "rows": 382923
+        },
+        {
+          "case_label": "PARQUET / August filter",
+          "format": "PARQUET",
+          "scope": "August filter",
+          "median_seconds": 0.0125857999955769,
+          "rows": 382923
+        }
+      ],
+      "identities": [
+        {
+          "relationship": "direct_purchase_amt = purchase_bal_amt + purchase_bank_amt",
+          "rows_checked": 2840421,
+          "mismatch_rows": 0,
+          "match_rate": 1.0,
+          "max_abs_delta": 0,
+          "sum_delta": 0,
+          "status": "PASS",
+          "severity_if_violated": "HIGH"
+        },
+        {
+          "relationship": "total_purchase_amt = direct_purchase_amt + share_amt",
+          "rows_checked": 2840421,
+          "mismatch_rows": 0,
+          "match_rate": 1.0,
+          "max_abs_delta": 0,
+          "sum_delta": 0,
+          "status": "PASS",
+          "severity_if_violated": "HIGH"
+        },
+        {
+          "relationship": "total_redeem_amt = consume_amt + transfer_amt",
+          "rows_checked": 2840421,
+          "mismatch_rows": 0,
+          "match_rate": 1.0,
+          "max_abs_delta": 0,
+          "sum_delta": 0,
+          "status": "PASS",
+          "severity_if_violated": "HIGH"
+        },
+        {
+          "relationship": "transfer_amt = tftobal_amt + tftocard_amt",
+          "rows_checked": 2840421,
+          "mismatch_rows": 0,
+          "match_rate": 1.0,
+          "max_abs_delta": 0,
+          "sum_delta": 0,
+          "status": "PASS",
+          "severity_if_violated": "HIGH"
+        },
+        {
+          "relationship": "consume_amt = category1..4 (null treated as structural zero)",
+          "rows_checked": 2840421,
+          "mismatch_rows": 0,
+          "match_rate": 1.0,
+          "max_abs_delta": 0,
+          "sum_delta": 0,
+          "status": "PASS",
+          "severity_if_violated": "HIGH"
+        },
+        {
+          "relationship": "tBalance = yBalance + total_purchase_amt - total_redeem_amt",
+          "rows_checked": 2840421,
+          "mismatch_rows": 1,
+          "match_rate": 0.9999996479395132,
+          "max_abs_delta": 100,
+          "sum_delta": -100,
+          "status": "REVIEW",
+          "severity_if_violated": "MEDIUM"
+        }
+      ],
+      "anomalies": [
+        {
+          "report_date": "2014-01-14",
+          "metric": "new_users",
+          "value": 195.0,
+          "robust_score": 34.26413058141104
+        },
+        {
+          "report_date": "2014-06-14",
+          "metric": "total_redeem_amt",
+          "value": 229916191.0,
+          "robust_score": 22.84701996864209
+        },
+        {
+          "report_date": "2014-01-15",
+          "metric": "new_users",
+          "value": 176.0,
+          "robust_score": 21.487348480468675
+        },
+        {
+          "report_date": "2013-11-05",
+          "metric": "new_users",
+          "value": 167.0,
+          "robust_score": 16.73963430337368
+        },
+        {
+          "report_date": "2013-10-17",
+          "metric": "new_users",
+          "value": 121.0,
+          "robust_score": 14.014419113569256
+        },
+        {
+          "report_date": "2014-06-28",
+          "metric": "total_redeem_amt",
+          "value": 283400236.0,
+          "robust_score": 13.818522464492508
+        },
+        {
+          "report_date": "2014-07-05",
+          "metric": "total_redeem_amt",
+          "value": 272535138.0,
+          "robust_score": 12.686001441764978
+        },
+        {
+          "report_date": "2014-01-16",
+          "metric": "new_users",
+          "value": 190.0,
+          "robust_score": 12.296485384304082
+        },
+        {
+          "report_date": "2014-06-16",
+          "metric": "total_redeem_amt",
+          "value": 492349489.0,
+          "robust_score": 12.27576943329496
+        },
+        {
+          "report_date": "2014-01-13",
+          "metric": "new_users",
+          "value": 155.0,
+          "robust_score": 11.46634291110212
+        },
+        {
+          "report_date": "2013-10-13",
+          "metric": "new_users",
+          "value": 67.0,
+          "robust_score": 11.19654660731148
+        },
+        {
+          "report_date": "2013-11-06",
+          "metric": "new_users",
+          "value": 162.0,
+          "robust_score": 11.12909753136382
+        },
+        {
+          "report_date": "2013-11-11",
+          "metric": "total_redeem_amt",
+          "value": 227124951.0,
+          "robust_score": 10.934347914026027
+        },
+        {
+          "report_date": "2013-10-18",
+          "metric": "new_users",
+          "value": 82.0,
+          "robust_score": 10.695496328843152
+        },
+        {
+          "report_date": "2014-01-21",
+          "metric": "new_users",
+          "value": 116.0,
+          "robust_score": 10.567021898466658
+        },
+        {
+          "report_date": "2014-01-17",
+          "metric": "new_users",
+          "value": 174.0,
+          "robust_score": 10.53243262874991
+        },
+        {
+          "report_date": "2013-11-10",
+          "metric": "new_users",
+          "value": 274.0,
+          "robust_score": 10.43212374657134
+        },
+        {
+          "report_date": "2013-10-16",
+          "metric": "new_users",
+          "value": 65.0,
+          "robust_score": 10.387157695939566
+        },
+        {
+          "report_date": "2013-10-22",
+          "metric": "new_users",
+          "value": 89.0,
+          "robust_score": 10.285984082018077
+        },
+        {
+          "report_date": "2014-01-28",
+          "metric": "new_users",
+          "value": 113.0,
+          "robust_score": 9.892531138990062
+        },
+        {
+          "report_date": "2013-09-10",
+          "metric": "total_purchase_amt",
+          "value": 94684143.0,
+          "robust_score": 9.569131426901489
+        },
+        {
+          "report_date": "2013-12-05",
+          "metric": "total_redeem_amt",
+          "value": 118256819.0,
+          "robust_score": 8.988406715078263
+        },
+        {
+          "report_date": "2014-06-21",
+          "metric": "total_redeem_amt",
+          "value": 231003775.0,
+          "robust_score": 8.815532800512644
+        },
+        {
+          "report_date": "2014-04-07",
+          "metric": "total_redeem_amt",
+          "value": 176966561.0,
+          "robust_score": 8.713083899431968
+        },
+        {
+          "report_date": "2014-01-20",
+          "metric": "total_redeem_amt",
+          "value": 442996084.0,
+          "robust_score": 8.667712978787455
+        }
+      ],
+      "leakage": [
+        {
+          "scope": "user balance",
+          "check": "maximum data date <= competition cutoff",
+          "observed": "2014-08-31",
+          "required": "2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "fund yield",
+          "check": "maximum data date <= competition cutoff",
+          "observed": "2014-08-31",
+          "required": "2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "observed SHIBOR",
+          "check": "maximum data date <= competition cutoff",
+          "observed": "2014-08-29",
+          "required": "2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "derived SHIBOR",
+          "check": "maximum data date <= competition cutoff",
+          "observed": "2014-08-31",
+          "required": "2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "daily aggregate",
+          "check": "maximum data date <= competition cutoff",
+          "observed": "2014-08-31",
+          "required": "2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "backtest_2013_09_v1.json",
+          "check": "explicit train/holdout chronology",
+          "observed": "train_end=2013-08-31; holdout_start=2013-09-01",
+          "required": "train_end < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "holdout_2014_08_v1.json",
+          "check": "explicit train/holdout chronology",
+          "observed": "train_end=2014-08-01; holdout_start=2014-08-02",
+          "required": "train_end < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "rolling_30d_2014_03_08_v1.json:rolling_2014_03",
+          "check": "training maximum implied as start-1; holdout within cutoff",
+          "observed": "train_max=2014-02-28; holdout_end=2014-03-30",
+          "required": "train_max < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "rolling_30d_2014_03_08_v1.json:rolling_2014_04",
+          "check": "training maximum implied as start-1; holdout within cutoff",
+          "observed": "train_max=2014-03-31; holdout_end=2014-04-30",
+          "required": "train_max < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "rolling_30d_2014_03_08_v1.json:rolling_2014_05",
+          "check": "training maximum implied as start-1; holdout within cutoff",
+          "observed": "train_max=2014-04-30; holdout_end=2014-05-30",
+          "required": "train_max < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "rolling_30d_2014_03_08_v1.json:rolling_2014_06",
+          "check": "training maximum implied as start-1; holdout within cutoff",
+          "observed": "train_max=2014-05-31; holdout_end=2014-06-30",
+          "required": "train_max < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "rolling_30d_2014_03_08_v1.json:rolling_2014_07",
+          "check": "training maximum implied as start-1; holdout within cutoff",
+          "observed": "train_max=2014-06-30; holdout_end=2014-07-30",
+          "required": "train_max < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "rolling_30d_2014_03_08_v1.json:holdout_2014_08",
+          "check": "training maximum implied as start-1; holdout within cutoff",
+          "observed": "train_max=2014-08-01; holdout_end=2014-08-31",
+          "required": "train_max < holdout_start and holdout_end <= 2014-08-31",
+          "status": "PASS"
+        },
+        {
+          "scope": "comp_predict_table.csv",
+          "check": "submission template excluded from training",
+          "observed": "3 placeholder rows for 2014-09-01..2014-09-03",
+          "required": "never join template values into training labels/features",
+          "status": "PASS"
+        },
+        {
+          "scope": "d003 user_balance_daily",
+          "check": "same-day transaction fields are target-time data",
+          "observed": "purchase/redeem/balance/category/log fields present",
+          "required": "lag before use as forecast features",
+          "status": "REVIEW"
+        },
+        {
+          "scope": "d003 shibor_daily",
+          "check": "calendar fill direction",
+          "observed": "forward fill from prior observed date only",
+          "required": "no backward fill or future observation",
+          "status": "PASS"
+        },
+        {
+          "scope": "d004 anomaly thresholds",
+          "check": "date anomaly baseline direction",
+          "observed": "shift(1), trailing 28-day median/MAD",
+          "required": "current and future dates excluded",
+          "status": "PASS"
+        },
+        {
+          "scope": "extreme-user audit",
+          "check": "full-period thresholds are audit-only",
+          "observed": "stored only in d004 evidence",
+          "required": "recompute within each training fold for modeling",
+          "status": "PASS"
+        },
+        {
+          "scope": "rolling_30d_2014_03_08_v1.json",
+          "check": "window-definition consistency",
+          "observed": "August is 2014-08-02..2014-08-31; other windows start on day 1",
+          "required": "lock one 30-day convention before model comparison",
+          "status": "REVIEW"
+        }
+      ],
+      "reconciliation": [
+        {
+          "check": "balance row count",
+          "source_value": 2840421,
+          "derived_value": 2840421,
+          "delta": 0,
+          "status": "PASS"
+        },
+        {
+          "check": "purchase grand total",
+          "source_value": 92591083456,
+          "derived_value": 92591083456,
+          "delta": 0,
+          "status": "PASS"
+        },
+        {
+          "check": "redeem grand total",
+          "source_value": 72718297570,
+          "derived_value": 72718297570,
+          "delta": 0,
+          "status": "PASS"
+        },
+        {
+          "check": "daily purchase grand total",
+          "source_value": 92591083456,
+          "derived_value": 92591083456,
+          "delta": 0,
+          "status": "PASS"
+        },
+        {
+          "check": "daily redeem grand total",
+          "source_value": 72718297570,
+          "derived_value": 72718297570,
+          "delta": 0,
+          "status": "PASS"
+        },
+        {
+          "check": "storage bytes",
+          "source_value": 157761201,
+          "derived_value": 50287689,
+          "delta": -107473512,
+          "status": "INFO"
+        }
+      ],
+      "audit_summary": [
+        {
+          "check_id": "types",
+          "dimension": "schema",
+          "status": "PASS",
+          "severity_if_failed": "CRITICAL",
+          "metric_value": 0,
+          "threshold": "0 type mismatches",
+          "details": "Frozen fields match date/integer/numeric/categorical families."
+        },
+        {
+          "check_id": "domain_constraints",
+          "dimension": "validity",
+          "status": "PASS",
+          "severity_if_failed": "HIGH",
+          "metric_value": 0,
+          "threshold": "0 invalid IDs, values, enums, or rates",
+          "details": "Values satisfy the frozen business domains."
+        },
+        {
+          "check_id": "primary_keys",
+          "dimension": "keys",
+          "status": "PASS",
+          "severity_if_failed": "CRITICAL",
+          "metric_value": 0,
+          "threshold": "0 duplicate and null-key rows",
+          "details": "Candidate keys are unique in all four structured source tables."
+        },
+        {
+          "check_id": "structural_nulls",
+          "dimension": "missingness",
+          "status": "PASS",
+          "severity_if_failed": "INFO",
+          "metric_value": 2666682,
+          "threshold": "all-four null iff consume_amt=0; no partial nulls",
+          "details": "Category nulls are structural and preserved in the canonical layer."
+        },
+        {
+          "check_id": "negative_amounts",
+          "dimension": "validity",
+          "status": "PASS",
+          "severity_if_failed": "HIGH",
+          "metric_value": 0,
+          "threshold": "0 negative source amounts",
+          "details": "Reconciliation delta is excluded because it is a quality diagnostic."
+        },
+        {
+          "check_id": "additive_relationships",
+          "dimension": "consistency",
+          "status": "REVIEW",
+          "severity_if_failed": "MEDIUM",
+          "metric_value": 1,
+          "threshold": "0 mismatches",
+          "details": "One known balance equation exception is retained, not corrected."
+        },
+        {
+          "check_id": "balance_continuity",
+          "dimension": "consistency",
+          "status": "PASS",
+          "severity_if_failed": "HIGH",
+          "metric_value": 0,
+          "threshold": "0 mismatches",
+          "details": "yBalance reconciles to the previous observed tBalance per user."
+        },
+        {
+          "check_id": "calendar",
+          "dimension": "completeness",
+          "status": "PASS",
+          "severity_if_failed": "CRITICAL",
+          "metric_value": 427,
+          "threshold": "427 continuous calendar days",
+          "details": "2013-07-01 through 2014-08-31."
+        },
+        {
+          "check_id": "anomalous_dates",
+          "dimension": "anomaly",
+          "status": "REVIEW",
+          "severity_if_failed": "MEDIUM",
+          "metric_value": 67,
+          "threshold": "review flags; not automatic deletions",
+          "details": "Prior-only robust flags identify dates requiring context review."
+        },
+        {
+          "check_id": "extreme_users",
+          "dimension": "distribution",
+          "status": "REVIEW",
+          "severity_if_failed": "INFO",
+          "metric_value": 103,
+          "threshold": "review only; preserve raw values",
+          "details": "Long-tail users are retained and listed for robust modeling checks."
+        },
+        {
+          "check_id": "cross_table_coverage",
+          "dimension": "coverage",
+          "status": "PASS",
+          "severity_if_failed": "HIGH",
+          "metric_value": 0,
+          "threshold": "0 required coverage gaps",
+          "details": "SHIBOR non-observation dates are expected weekends/holidays and are flagged."
+        },
+        {
+          "check_id": "time_leakage",
+          "dimension": "leakage",
+          "status": "PASS",
+          "severity_if_failed": "CRITICAL",
+          "metric_value": 0,
+          "threshold": "0 failed chronology/cutoff checks",
+          "details": "Same-day outcomes are explicitly marked lag-before-use."
+        },
+        {
+          "check_id": "derived_reconciliation",
+          "dimension": "reconciliation",
+          "status": "PASS",
+          "severity_if_failed": "HIGH",
+          "metric_value": 0,
+          "threshold": "0 row/total mismatches",
+          "details": "Canonical Parquet and daily aggregates reconcile to official CSV totals."
+        }
+      ]
+    },
+    "accessIssues": []
+  },
+  "sources": [
+    {
+      "id": "official_balance",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/raw/official/user_balance_table.csv', header = true)",
+        "description": "Frozen official user balance CSV",
+        "path": "data/raw/official/user_balance_table.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "official_profile",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/raw/official/user_profile_table.csv', header = true)",
+        "description": "Frozen official user profile CSV",
+        "path": "data/raw/official/user_profile_table.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "canonical_layer",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_json_auto('data/derived/d003_validated_data_layer_v2/manifest.json')",
+        "description": "Typed canonical Parquet layer",
+        "path": "data/derived/d003_validated_data_layer_v2/manifest.json",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "audit_evidence",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_json_auto('data/derived/d004_data_quality_audit_v2/manifest.json')",
+        "description": "Reviewed data-quality evidence package",
+        "path": "data/derived/d004_data_quality_audit_v2/manifest.json",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "validation_splits",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_json_auto('validation/splits/rolling_30d_2014_03_08_v1.json')",
+        "description": "Frozen rolling and stress-test definitions",
+        "path": "validation/splits/rolling_30d_2014_03_08_v1.json",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "audit_summary_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d004_data_quality_audit_v2/audit_summary.csv', header = true)",
+        "description": "Audit summary evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/audit_summary.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "daily_metrics_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d004_data_quality_audit_v2/daily_metrics.csv', header = true)",
+        "description": "Daily metric evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/daily_metrics.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "concentration_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d004_data_quality_audit_v2/user_concentration.csv', header = true)",
+        "description": "User concentration evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/user_concentration.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "identities_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d004_data_quality_audit_v2/additive_relationships.csv', header = true)",
+        "description": "Additive relationship evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/additive_relationships.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "anomalies_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d004_data_quality_audit_v2/anomalous_dates.csv', header = true)",
+        "description": "Anomalous date evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/anomalous_dates.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "leakage_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d004_data_quality_audit_v2/leakage_audit.csv', header = true)",
+        "description": "Leakage-check evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/leakage_audit.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    },
+    {
+      "id": "performance_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "SELECT * FROM read_csv_auto('data/derived/d004_data_quality_audit_v2/read_performance.csv', header = true)",
+        "description": "Read benchmark evidence",
+        "path": "data/derived/d004_data_quality_audit_v2/read_performance.csv",
+        "executed_at": "2026-08-24T03:19:56.634607Z"
+      }
+    }
+  ],
+  "package_info": {
+    "originUrl": "artifact://official-data-quality-audit",
+    "controls": {
+      "edit": false,
+      "refresh": false
+    }
+  }
+}

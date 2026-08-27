@@ -1,0 +1,107 @@
+{
+  "analysis_version": "d005_direct_feature_analysis_v1",
+  "generated_at": "2026-08-24T03:37:31.353621Z",
+  "generator": "scripts/analyze_direct_features.py",
+  "command": ".venv\\Scripts\\python.exe scripts\\analyze_direct_features.py",
+  "generator_sha256": "229cf64c0456f88f0bf35611fc304dfd9b654c52621d865df9851deabe637d5d",
+  "source": "data/derived/d003_validated_data_layer_v2/manifest.json",
+  "units_of_analysis": {
+    "demographics": "user, normalized by days since first appearance",
+    "rates": "calendar date, 427 daily observations",
+    "transaction_components": "daily aggregate and user normalized behavior"
+  },
+  "primary_targets": [
+    "total_purchase_amt",
+    "total_redeem_amt",
+    "direct_purchase_amt",
+    "purchase_bank_amt",
+    "transfer_amt"
+  ],
+  "files": [
+    {
+      "path": "daily_analysis_table.csv",
+      "bytes": 82153,
+      "sha256": "c1751e949c094789c5445950795f0744852d02b3d225fb644fdba4cce2fefe9a"
+    },
+    {
+      "path": "demographic_associations.csv",
+      "bytes": 9910,
+      "sha256": "649dbe12eb99877f558ea1c4ee87a929d8b9f70ef74adeee08af811f44d527df"
+    },
+    {
+      "path": "demographic_combination_associations.csv",
+      "bytes": 4622,
+      "sha256": "08876009a24fb8d1b89a15b5e084f88a8de417b66c9fbb0bbb3a8a4a14253e41"
+    },
+    {
+      "path": "demographic_effect_sizes.png",
+      "bytes": 89337,
+      "sha256": "e4617e1a3637c027f746c5c9536b6325b8ec4b9d8231e978d8c7fe45dacf53e6"
+    },
+    {
+      "path": "demographic_group_summary.csv",
+      "bytes": 33005,
+      "sha256": "c0ecc3481af8064b2f2c8b7620ce4bf0270c8a9a5c2ddd2e99b63ce45bd6e405"
+    },
+    {
+      "path": "direct_feature_analysis.ipynb",
+      "bytes": 45412,
+      "sha256": "190502da5ce1f1772af903e6a54f2ac7c50a5d59f5cbf8ba8847bbaa6fac5cb8"
+    },
+    {
+      "path": "direct_feature_report.html",
+      "bytes": 467974,
+      "sha256": "68d5f9cae93a999e9b3e183e5d7730c7afee998a65f1dbaa8a09762b7852fa15"
+    },
+    {
+      "path": "feature_combination_catalog.csv",
+      "bytes": 33342,
+      "sha256": "0158acaf256ba706403f9deaa8a4ad4f6917df0ab56763ff47ffe9c62bb04d25"
+    },
+    {
+      "path": "FEATURE_COMBINATIONS.md",
+      "bytes": 25110,
+      "sha256": "8fcd5215c367aa9c2d9ffcc67e6f02a35277c0d8ab4fb0c6b7d184bf398b3815"
+    },
+    {
+      "path": "rate_associations.csv",
+      "bytes": 35999,
+      "sha256": "19c2514deb4d1256db0e82421f1df33a8f2b29bf4b232d05d4b8ce74c44dc227"
+    },
+    {
+      "path": "rate_collinearity.csv",
+      "bytes": 3078,
+      "sha256": "7f802c1a7a9b0a63f31436d77c333e36fe8dabb18146a3606c00ad33f51ac64f"
+    },
+    {
+      "path": "rate_residual_correlations.png",
+      "bytes": 117782,
+      "sha256": "a093aa1ac3778374443693f0c28afed68594cb8e989528e87539cd8c3a4dc22d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 407,
+      "sha256": "dabbfd37ea08176ab3abd6b1c1b868912d0f3650d67d92d1254ed453c879dbb0"
+    },
+    {
+      "path": "report_artifact.json",
+      "bytes": 80249,
+      "sha256": "c01ac317eb762396949b1083f6d09811f41c75bba691f740f8b7419d4a272324"
+    },
+    {
+      "path": "report_build_receipt.json",
+      "bytes": 333,
+      "sha256": "b6682f591f06216218dee9be891c09f5847000f8da8389750e3483541d3d65ae"
+    },
+    {
+      "path": "transaction_component_associations.csv",
+      "bytes": 12906,
+      "sha256": "76c13e22c47fdabd70169b2f8bb23ecfd73c661f36d9addfa66797ce23e9628a"
+    },
+    {
+      "path": "transaction_component_correlations.png",
+      "bytes": 111989,
+      "sha256": "9ad5a16d0377ea1d6f3422e81d2a66206c5b52e37662fdce4952e5d32c49eba4"
+    }
+  ]
+}

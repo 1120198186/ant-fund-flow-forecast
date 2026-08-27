@@ -1,0 +1,5 @@
+﻿file,candidate_key,rows,distinct_keys,duplicate_rows,null_key_rows,status
+user_balance_table.csv,user_id+report_date,2840421,2840421,0,0,PASS
+user_profile_table.csv,user_id,28041,28041,0,0,PASS
+mfd_day_share_interest.csv,mfd_date,427,427,0,0,PASS
+mfd_bank_shibor.csv,mfd_date,294,294,0,0,PASS

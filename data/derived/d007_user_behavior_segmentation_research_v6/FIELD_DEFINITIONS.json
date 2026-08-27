@@ -1,0 +1,25 @@
+{
+  "grain": "one row per user observed before each rolling cutoff",
+  "assignment_boundary": "all behavior features and thresholds use report_date < cutoff_date",
+  "evaluation_boundary": "future_* fields use the 30-day rolling window only",
+  "manual_rules": {
+    "no_active_history": "no historical direct purchase and no historical redemption at any tenure",
+    "history_insufficient": "fewer than 28 days between first observation and cutoff",
+    "observed_never_used": "at least 28 days observed, no active flow, and zero historical maximum balance",
+    "passive_balance_only": "at least 28 days observed, no active flow, but a positive historical balance",
+    "funded_never_withdrawn": "historical direct purchase, zero historical redemption, positive current balance",
+    "dormant_zero_balance": "previously active, no active flow in 90 days, zero current balance",
+    "low_turnover_holder": "positive balance, at most one active-flow day in 90 days, low recent redemption",
+    "frequent_large_roundtrip": "90-day frequency >= fold p75, at least three direct-purchase and transfer days, transfer volume >= fold p90, roundtrip ratio >= 0.5",
+    "frequent_small_consumer": "consumption frequency >= fold p75, median event <= fold event p50, consumption >= 50% of redemption",
+    "transfer_oriented": "transfer is at least 80% of 90-day redemption",
+    "consumption_oriented": "consumption is at least 80% of 90-day redemption"
+  },
+  "automatic_clustering": {
+    "population": "users with at least 28 days of history, active history, and recent active flow or positive current balance",
+    "preprocessing": "log transforms for amounts, robust median/IQR scaling, clip to [-6, 6]",
+    "candidate_k": "3 through 8",
+    "selection": "lowest combined rank over Calinski-Harabasz, Davies-Bouldin, repeated-start ARI, and minimum cluster share",
+    "future_labels_used_for_clustering": false
+  }
+}

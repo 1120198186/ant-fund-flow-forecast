@@ -1,0 +1,7 @@
+﻿check,source_value,derived_value,delta,status
+balance row count,2840421,2840421,0,PASS
+purchase grand total,92591083456,92591083456,0,PASS
+redeem grand total,72718297570,72718297570,0,PASS
+daily purchase grand total,92591083456,92591083456,0,PASS
+daily redeem grand total,72718297570,72718297570,0,PASS
+storage bytes,157761201,50287689,-107473512,INFO

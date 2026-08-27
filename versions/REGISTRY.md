@@ -1,8 +1,8 @@
-# Major-version registry
+# 主要模型版本登记
 
-| Version | Status | Parent | Purpose | Best local result | Online result |
+| 版本 | 状态 | 父版本 | 用途 | 最佳本地结果 | 线上结果 |
 |---|---|---|---|---|---|
-| `v001_baseline` | scaffolded | — | Establish a reproducible time-series baseline and submission contract | not run | not submitted |
+| `v001_baseline` | frozen | - | 无泄漏季节基线、分量挑战模型和正式提交契约 | 8月线性5.1785、二次4.1119、三次3.4232 | `106.5001`（2026-08-25，`initial_20260825/首榜初级提交.csv`） |
 
-Status vocabulary: `scaffolded`, `active`, `frozen`, `retired`. Do not overwrite an online result; append the new result with its submission artifact name and date.
+状态词：`scaffolded`（已搭架）、`active`（开发中）、`frozen`（已冻结）、`retired`（已退役）。线上结果不得覆盖；每次提交都要追加产物名称和日期。
 

@@ -1,0 +1,7 @@
+﻿relationship,rows_checked,mismatch_rows,match_rate,max_abs_delta,sum_delta,status,severity_if_violated
+direct_purchase_amt = purchase_bal_amt + purchase_bank_amt,2840421,0,1.0,0,0,PASS,HIGH
+total_purchase_amt = direct_purchase_amt + share_amt,2840421,0,1.0,0,0,PASS,HIGH
+total_redeem_amt = consume_amt + transfer_amt,2840421,0,1.0,0,0,PASS,HIGH
+transfer_amt = tftobal_amt + tftocard_amt,2840421,0,1.0,0,0,PASS,HIGH
+consume_amt = category1..4 (null treated as structural zero),2840421,0,1.0,0,0,PASS,HIGH
+tBalance = yBalance + total_purchase_amt - total_redeem_amt,2840421,1,0.9999996479395132,100,-100,REVIEW,MEDIUM

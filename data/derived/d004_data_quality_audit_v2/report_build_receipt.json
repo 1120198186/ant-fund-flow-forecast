@@ -1,0 +1,18 @@
+{
+  "status": "passed_with_verification_limit",
+  "validation": "passed",
+  "package": "passed",
+  "verification": "structural_only",
+  "counts": {
+    "blocks": 13,
+    "charts": 3,
+    "tables": 3,
+    "metric_groups": 1
+  },
+  "html_readback": {
+    "title_occurrences": 2,
+    "artifact_block_occurrences": 13,
+    "source_markup_occurrences": 704
+  },
+  "browser_limit": "Installed Edge did not apply the Chromium static-chart extraction environment; no pixel-level browser verification was recorded."
+}

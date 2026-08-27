@@ -1,0 +1,22 @@
+{
+  "split_id": "rolling_30d_2014_03_08_v1",
+  "status": "diagnostic_rolling_backtest",
+  "unit": "calendar_day",
+  "targets": [
+    "total_purchase_amt",
+    "total_redeem_amt"
+  ],
+  "aggregation": "sum_by_report_date",
+  "source": "data/raw/official/user_balance_table.csv",
+  "windows": [
+    {"id": "rolling_2014_03", "start": "2014-03-01", "end": "2014-03-30"},
+    {"id": "rolling_2014_04", "start": "2014-04-01", "end": "2014-04-30"},
+    {"id": "rolling_2014_05", "start": "2014-05-01", "end": "2014-05-30"},
+    {"id": "rolling_2014_06", "start": "2014-06-01", "end": "2014-06-30"},
+    {"id": "rolling_2014_07", "start": "2014-07-01", "end": "2014-07-30"},
+    {"id": "holdout_2014_08", "start": "2014-08-02", "end": "2014-08-31"}
+  ],
+  "training_rule": "for each window, use only rows strictly before window.start",
+  "summary_rule": "report per-window metrics plus the median and worst 2014 window; do not average this suite with the 2013-09 stress test",
+  "notes": "The 2014-08 window remains the primary near-term holdout. Earlier windows measure sensitivity to regime and volatility changes."
+}

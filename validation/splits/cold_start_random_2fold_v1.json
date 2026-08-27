@@ -1,0 +1,30 @@
+{
+  "split_id": "cold_start_random_2fold_v1",
+  "status": "diagnostic_identity_holdout",
+  "unit": "user_id",
+  "source": "data/raw/official/user_balance_table.csv",
+  "eligibility": {
+    "training_window_end": "2014-08-01",
+    "holdout_window": {
+      "start": "2014-08-02",
+      "end": "2014-08-31"
+    },
+    "rule": "user must appear at least once on or before training_window_end; holdout activity is not used for selection"
+  },
+  "sampling": {
+    "method": "sha256_rank_without_replacement",
+    "seed": 20260824,
+    "salt": "coldstart-v1-seed-20260824",
+    "ordering": "ascending(selection_hash, user_id)",
+    "sample_size": 4000,
+    "folds": 2,
+    "users_per_fold": 2000
+  },
+  "expected_id_list_sha256": {
+    "all_4000": "c080e856fd5744bebd4478c5b0f2d9bc2c5c6c41c55c959db1d14826c551a0b7",
+    "fold_1": "1d2a118479bf7d5fd316df54b1aac3b89b1639ef2a13bd598af9ab87bf4f976f",
+    "fold_2": "afec50617944f5eda6ef2e30e82950792e12288745ff7ffbc878ca97b5454a49"
+  },
+  "generated_membership": "data/derived/d001_feature_tests/cold_start_user_folds.csv",
+  "notes": "These folds test unseen user identities after masking their user-level history and profile features. They are not true temporal new-user cohorts; use true_new_user_cohorts.csv as the complementary cold-start diagnostic. For aggregate-only models these folds have little value because the model does not consume user identity."
+}

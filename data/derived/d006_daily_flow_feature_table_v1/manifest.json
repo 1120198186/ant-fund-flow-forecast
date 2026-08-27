@@ -1,0 +1,40 @@
+{
+  "dataset_version": "d006_daily_flow_feature_table_v1",
+  "generator": "scripts/build_daily_flow_feature_table.py",
+  "command": ".venv\\Scripts\\python.exe scripts\\build_daily_flow_feature_table.py",
+  "generator_sha256": "77efb86c910a7333b70a23be28dadbd07fe4b55e103d4f6825b4ea8b71d6597c",
+  "source": "data/derived/d003_validated_data_layer_v2/manifest.json",
+  "rows": 427,
+  "date_range": [
+    "2013-07-01",
+    "2014-08-31"
+  ],
+  "core_fields": {
+    "direct_inflow_amt": "sum(direct_purchase_amt)",
+    "profit_share_inflow_amt": "sum(share_amt)",
+    "total_outflow_amt": "sum(total_redeem_amt)",
+    "transfer_outflow_amt": "sum(transfer_amt)"
+  },
+  "files": [
+    {
+      "path": "daily_flow_rate_features.csv",
+      "bytes": 127978,
+      "sha256": "1fc0d5f2bc9e29403ddcf979557ca009ec39e427164e2abeafcb4222ec0f7552"
+    },
+    {
+      "path": "daily_flow_rate_features.parquet",
+      "bytes": 90742,
+      "sha256": "f28e0927684a7911c861b7d0dd35e34f0036b0e60d21fcfe07e1e95343149545"
+    },
+    {
+      "path": "rate_flow_correlations.csv",
+      "bytes": 12889,
+      "sha256": "fafecc5c9ccfd741c1f68239b0c4fa0784d3437649b4ccc0c2189161ff81ce71"
+    },
+    {
+      "path": "README.md",
+      "bytes": 818,
+      "sha256": "a3d36739adb29fb700642717bf3dfe2a506ba17814d28e0646c8cd6b483fbee4"
+    }
+  ]
+}

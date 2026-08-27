@@ -1,0 +1,140 @@
+{
+  "dataset_version": "d007_user_behavior_segmentation_research_v6",
+  "generated_at": "2026-08-25T05:56:13.510397Z",
+  "generator": "scripts\\analyze_user_behavior_segments.py",
+  "generator_sha256": "908f52aeccc818c06a7352e98f7746b39dea520e9f928b91e180e54b4bf9ae5f",
+  "sources": [
+    {
+      "path": "data\\derived\\d003_validated_data_layer_v2\\user_balance_daily.parquet",
+      "sha256": "5c5c9b868b2c9d36a4314f131aea5419eecce0cfbb14ba9f7abee9acb3eae596"
+    },
+    {
+      "path": "validation\\splits\\rolling_30d_2014_03_08_v1.json",
+      "sha256": "9e3732568218b34fbd803979b5afa56a8d1cc01d41b216bd9bb2a07290d92199"
+    }
+  ],
+  "competition_cutoff": "2014-08-31",
+  "windows": [
+    {
+      "id": "rolling_2014_03",
+      "start": "2014-03-01",
+      "end": "2014-03-30"
+    },
+    {
+      "id": "rolling_2014_04",
+      "start": "2014-04-01",
+      "end": "2014-04-30"
+    },
+    {
+      "id": "rolling_2014_05",
+      "start": "2014-05-01",
+      "end": "2014-05-30"
+    },
+    {
+      "id": "rolling_2014_06",
+      "start": "2014-06-01",
+      "end": "2014-06-30"
+    },
+    {
+      "id": "rolling_2014_07",
+      "start": "2014-07-01",
+      "end": "2014-07-30"
+    },
+    {
+      "id": "holdout_2014_08",
+      "start": "2014-08-02",
+      "end": "2014-08-31"
+    }
+  ],
+  "snapshot_rows": 134423,
+  "snapshot_users_by_window": {
+    "holdout_2014_08": 26584,
+    "rolling_2014_03": 17336,
+    "rolling_2014_04": 19897,
+    "rolling_2014_05": 21978,
+    "rolling_2014_06": 23624,
+    "rolling_2014_07": 25004
+  },
+  "files": [
+    {
+      "path": "auto_cluster_profiles.csv",
+      "bytes": 3244,
+      "sha256": "040afd6076adb25e1d887a9d42054cc541fa43f97c4b3884bd821ad39405d129"
+    },
+    {
+      "path": "cluster_k_diagnostics.csv",
+      "bytes": 5397,
+      "sha256": "9d06687b8c53bebe43edaf992912153b7d8f66fde153bcea306d9d8a840c5af1"
+    },
+    {
+      "path": "cluster_scaling.json",
+      "bytes": 7672,
+      "sha256": "efac56a759af9842d739d7cbce246ba4fda410cbf297ba95d134ecacacfb3772"
+    },
+    {
+      "path": "FIELD_DEFINITIONS.json",
+      "bytes": 1937,
+      "sha256": "94bb9c0284d29a77caecddcf6a16deb2afdcf32929ca4f0d1cf9320fa65ba02d"
+    },
+    {
+      "path": "future_new_user_summary.csv",
+      "bytes": 1346,
+      "sha256": "7cf2ba7bd89888dd771f575e0976700b36676a18228140acce62aa7f69b1946b"
+    },
+    {
+      "path": "manual_rule_overlap.csv",
+      "bytes": 23222,
+      "sha256": "75363ef664a9034c311b827796c5275e7ff009e7c8f347167779cf7ffc353a8e"
+    },
+    {
+      "path": "manual_rule_summary.csv",
+      "bytes": 11336,
+      "sha256": "cf9c9f320cf395c676c718034d9d5c00c42cc1605309d4a9fa691d9cb4a0ee9d"
+    },
+    {
+      "path": "predictive_strength.png",
+      "bytes": 50765,
+      "sha256": "a750d4acb50a8581a0bb7866d20017669e026191acf460a116cd88427fa47e47"
+    },
+    {
+      "path": "rule_coverage.png",
+      "bytes": 110048,
+      "sha256": "254b7813138bb61384d331d071d1da7e10dde883b62a37093b3a7882e6e1489d"
+    },
+    {
+      "path": "rule_thresholds.csv",
+      "bytes": 659,
+      "sha256": "8e7cf40703bf824350bb5a5a1e00762f528234cf7ec682084bb5b9e9f665b393"
+    },
+    {
+      "path": "segment_future_outcome_summary.csv",
+      "bytes": 53620,
+      "sha256": "9acda409e348028d5ccc592b6c9325e11dd6ca117600ff2c469d1206ddce96dc"
+    },
+    {
+      "path": "segment_predictive_strength.csv",
+      "bytes": 4548,
+      "sha256": "939448f7b0d1f43cb5bd3e4a7bdd3f674aef19d4de7ae41abcb47e0847c21139"
+    },
+    {
+      "path": "segment_temporal_stability.csv",
+      "bytes": 1373,
+      "sha256": "03479e142cdb9eb9015b777955206227f94b9b3636e9386bfd45acc140976e9d"
+    },
+    {
+      "path": "user_behavior_snapshots.parquet",
+      "bytes": 25938952,
+      "sha256": "39aa6bdde72cb574c66653f6ccf8cbfe686e4024561eed9b0d2f143165888ad0"
+    },
+    {
+      "path": "\u7528\u6237\u884c\u4e3a\u5206\u5c42\u7814\u7a76\u62a5\u544a.md",
+      "bytes": 6904,
+      "sha256": "b3cb59fb7f02d5250d01ec08a406e8518b0d846b90b7ea670463249815608a13"
+    }
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "pandas": "3.0.1",
+    "numpy": "2.3.5"
+  }
+}

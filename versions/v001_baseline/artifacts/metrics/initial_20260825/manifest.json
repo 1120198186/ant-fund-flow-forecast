@@ -1,0 +1,170 @@
+{
+  "run_id": "initial_20260825",
+  "generated_at": "2026-08-25T06:50:37.302667Z",
+  "generator": "versions\\v001_baseline\\src\\run_initial_model.py",
+  "generator_sha256": "5b950f41f82ad112c4f75269c7d6ed76eb2286d41d7e304ac56cd9c7439f3030",
+  "config": "versions\\v001_baseline\\configs\\initial_component_ensemble.json",
+  "config_sha256": "5655d083717651ff8abe2d33c946ae65478ae110f0cc6d25445fda464d4c33f5",
+  "sources": [
+    "data/derived/d006_daily_flow_feature_table_v1/daily_flow_rate_features.parquet",
+    "validation/splits/rolling_30d_2014_03_08_v1.json",
+    "validation/splits/backtest_2013_09_v1.json"
+  ],
+  "selected": {
+    "purchase_seasonal_weight": 1.0,
+    "redeem_seasonal_weight": 1.0,
+    "component_weight_is_one_minus_seasonal": true,
+    "selection_rule": "3-7月三次评分中位数、最差折、加权误差、超阈值天数依次排序",
+    "tuning_windows": [
+      "rolling_2014_03",
+      "rolling_2014_04",
+      "rolling_2014_05",
+      "rolling_2014_06",
+      "rolling_2014_07"
+    ],
+    "quasi_holdout_window": "holdout_2014_08"
+  },
+  "contamination_test": {
+    "cutoff": "2014-07-01",
+    "columns_checked": [
+      "seasonal_purchase",
+      "seasonal_redeem",
+      "component_purchase",
+      "component_redeem"
+    ],
+    "max_absolute_difference": 0.0,
+    "passed": true
+  },
+  "submission": {
+    "path": "versions\\v001_baseline\\artifacts\\submissions\\initial_20260825\\首榜初级提交.csv",
+    "rows": 30,
+    "sha256": "7032d75ab445c05a2321b92c4580e691f3a8d2ebbf6a66d6210d14b542bf31d6"
+  },
+  "runtime": {
+    "python": "3.12.13",
+    "numpy": "2.3.5",
+    "pandas": "3.0.1"
+  },
+  "files": [
+    {
+      "path": "artifacts\\metrics\\initial_20260825\\时间泄漏哨兵测试.json",
+      "bytes": 215,
+      "sha256": "3c8beac8a8f2e8e036e0f4f85383fcb9919090c02fa838627e06c4e587afa717"
+    },
+    {
+      "path": "artifacts\\metrics\\initial_20260825\\滚动评估结果.csv",
+      "bytes": 2315,
+      "sha256": "4ac0d1d09aaa6ebb226efc08fa2dd1104a014dafdbeffe3a1afc0ea436c91e55"
+    },
+    {
+      "path": "artifacts\\metrics\\initial_20260825\\融合权重搜索.csv",
+      "bytes": 3805,
+      "sha256": "f1cdf69543f2da68d73c38987aed85b206d8fcd5589f5591c85aa2cec4c0f275"
+    },
+    {
+      "path": "artifacts\\metrics\\initial_20260825\\选定配置.json",
+      "bytes": 427,
+      "sha256": "8786afff1b55175afac4996ac2e8eebca93cfa0db1d216779fb31d924104d4ca"
+    },
+    {
+      "path": "artifacts\\metrics\\initial_20260825\\首榜初级结果报告.md",
+      "bytes": 2629,
+      "sha256": "2959a6f1f69634ae0a36e1859f1b458577d047cf32eaa0fd0ffa6fe4f36749d3"
+    },
+    {
+      "path": "artifacts\\models\\initial_20260825\\consume_outflow_amt.joblib",
+      "bytes": 3354,
+      "sha256": "8dffebbf10feda58c8f6d9804b68f8409c12ba648989b881701086bfa2e37453"
+    },
+    {
+      "path": "artifacts\\models\\initial_20260825\\direct_inflow_amt.joblib",
+      "bytes": 3358,
+      "sha256": "a5a14fffd3cf132c78b050e75e2bb4fa8a55fff7f92d218b08a9307b046146cc"
+    },
+    {
+      "path": "artifacts\\models\\initial_20260825\\transfer_outflow_amt.joblib",
+      "bytes": 3355,
+      "sha256": "7eb46e55b721315dadfc46c05537a6bf66c259f0a7a0f96f253b5176cb5882b6"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\2014年9月分量预测.csv",
+      "bytes": 6072,
+      "sha256": "dffcd79e7934c0386ff26cf57c8d73ada4857b9756eb0a2d17c54338d5023ac4"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\backtest_2013_09_候选预测.csv",
+      "bytes": 3340,
+      "sha256": "de008cf8854bc507413837f8f43920642fe3e46efcc085d0ac56d597a0a22ead"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\backtest_2013_09_选定预测.csv",
+      "bytes": 4475,
+      "sha256": "3f6eb02c62c36231f1f6f42c3b851d73d3497970874aa25aea68323fa98bb6d6"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\holdout_2014_08_候选预测.csv",
+      "bytes": 5681,
+      "sha256": "ca9abd6859598fdec4ccf08cbb54a216d69e824a44fcee0d00a4d195101858ac"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\holdout_2014_08_选定预测.csv",
+      "bytes": 6834,
+      "sha256": "0f0b48dc00f6bdfdcc5eee44908332f57b8f4af3da055bcf32c5565ed9620dbd"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_03_候选预测.csv",
+      "bytes": 5651,
+      "sha256": "428d7f9526f058610a4a7e7e7cc6c2ecd47584630fdc7e12f90d8058ac87f1b9"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_03_选定预测.csv",
+      "bytes": 6800,
+      "sha256": "e6bf19a675c966b6bc0e3038d72236b6fb81661c8331862bd25bbfbba364777d"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_04_候选预测.csv",
+      "bytes": 5662,
+      "sha256": "27bfee2803e87830302431353c615e2ea949b7c2d0442f84b03e99a1bbf0a4c9"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_04_选定预测.csv",
+      "bytes": 6807,
+      "sha256": "524f5763d1e8c2ec1d0d5b37694b13c4f07ba8dbf0c7472bbe8aeb44e6a1f965"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_05_候选预测.csv",
+      "bytes": 5684,
+      "sha256": "da3c27223c111c90a8a1cdd0bd98ede8855155dcb68f9b68d20fd87767c88da0"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_05_选定预测.csv",
+      "bytes": 6826,
+      "sha256": "a0e4cd8c0cf00fab4d828491b03fd9474f445bd773c61e37032f1b61b26779a3"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_06_候选预测.csv",
+      "bytes": 5705,
+      "sha256": "6b87e4ac23f196c0525ecc877b9f18935135425bd6181a446f5c79674b39e1d4"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_06_选定预测.csv",
+      "bytes": 6858,
+      "sha256": "814d2d7cbae6d7137bccec19d423b2976fe96fcc053fd701e9e3981e905516ed"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_07_候选预测.csv",
+      "bytes": 5679,
+      "sha256": "eedd9659bd90a9d98b707c29c706768f03e980c2d7dffdc7636598f9edabfd6f"
+    },
+    {
+      "path": "artifacts\\predictions\\initial_20260825\\rolling_2014_07_选定预测.csv",
+      "bytes": 6832,
+      "sha256": "961c2bf849a53a64f936f73d346b92ba1b0b2c578c107f6963b6c9e57fba79e7"
+    },
+    {
+      "path": "artifacts\\submissions\\initial_20260825\\首榜初级提交.csv",
+      "bytes": 900,
+      "sha256": "7032d75ab445c05a2321b92c4580e691f3a8d2ebbf6a66d6210d14b542bf31d6"
+    }
+  ]
+}

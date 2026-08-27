@@ -1,0 +1,20 @@
+﻿scope,check,observed,required,status
+user balance,maximum data date <= competition cutoff,2014-08-31,2014-08-31,PASS
+fund yield,maximum data date <= competition cutoff,2014-08-31,2014-08-31,PASS
+observed SHIBOR,maximum data date <= competition cutoff,2014-08-29,2014-08-31,PASS
+derived SHIBOR,maximum data date <= competition cutoff,2014-08-31,2014-08-31,PASS
+daily aggregate,maximum data date <= competition cutoff,2014-08-31,2014-08-31,PASS
+backtest_2013_09_v1.json,explicit train/holdout chronology,train_end=2013-08-31; holdout_start=2013-09-01,train_end < holdout_start and holdout_end <= 2014-08-31,PASS
+holdout_2014_08_v1.json,explicit train/holdout chronology,train_end=2014-08-01; holdout_start=2014-08-02,train_end < holdout_start and holdout_end <= 2014-08-31,PASS
+rolling_30d_2014_03_08_v1.json:rolling_2014_03,training maximum implied as start-1; holdout within cutoff,train_max=2014-02-28; holdout_end=2014-03-30,train_max < holdout_start and holdout_end <= 2014-08-31,PASS
+rolling_30d_2014_03_08_v1.json:rolling_2014_04,training maximum implied as start-1; holdout within cutoff,train_max=2014-03-31; holdout_end=2014-04-30,train_max < holdout_start and holdout_end <= 2014-08-31,PASS
+rolling_30d_2014_03_08_v1.json:rolling_2014_05,training maximum implied as start-1; holdout within cutoff,train_max=2014-04-30; holdout_end=2014-05-30,train_max < holdout_start and holdout_end <= 2014-08-31,PASS
+rolling_30d_2014_03_08_v1.json:rolling_2014_06,training maximum implied as start-1; holdout within cutoff,train_max=2014-05-31; holdout_end=2014-06-30,train_max < holdout_start and holdout_end <= 2014-08-31,PASS
+rolling_30d_2014_03_08_v1.json:rolling_2014_07,training maximum implied as start-1; holdout within cutoff,train_max=2014-06-30; holdout_end=2014-07-30,train_max < holdout_start and holdout_end <= 2014-08-31,PASS
+rolling_30d_2014_03_08_v1.json:holdout_2014_08,training maximum implied as start-1; holdout within cutoff,train_max=2014-08-01; holdout_end=2014-08-31,train_max < holdout_start and holdout_end <= 2014-08-31,PASS
+comp_predict_table.csv,submission template excluded from training,3 placeholder rows for 2014-09-01..2014-09-03,never join template values into training labels/features,PASS
+d003 user_balance_daily,same-day transaction fields are target-time data,purchase/redeem/balance/category/log fields present,lag before use as forecast features,REVIEW
+d003 shibor_daily,calendar fill direction,forward fill from prior observed date only,no backward fill or future observation,PASS
+d004 anomaly thresholds,date anomaly baseline direction,"shift(1), trailing 28-day median/MAD",current and future dates excluded,PASS
+extreme-user audit,full-period thresholds are audit-only,stored only in d004 evidence,recompute within each training fold for modeling,PASS
+rolling_30d_2014_03_08_v1.json,window-definition consistency,August is 2014-08-02..2014-08-31; other windows start on day 1,lock one 30-day convention before model comparison,REVIEW

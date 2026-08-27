@@ -4,21 +4,7 @@ __pycache__/
 *.py[cod]
 .venv/
 
-# Official and derived datasets are local assets. Their manifests stay tracked.
+# Official source CSV files and their read-only snapshot stay local.
 data/raw/official/*.csv
 !data/raw/official/inventory.csv
-data/derived/**
-!data/derived/README.md
-
-# Self-built test labels and generated reports are reproducible local assets.
-validation/locked/*.csv
-validation/reports/**
-!validation/reports/README.md
-
-# Large, generated outputs stay inside their major version but out of Git.
-versions/*/artifacts/models/**
-versions/*/artifacts/predictions/**
-versions/*/artifacts/submissions/**
-!versions/*/artifacts/models/.gitkeep
-!versions/*/artifacts/predictions/.gitkeep
-!versions/*/artifacts/submissions/.gitkeep
+data/derived/d002_official_csv_snapshot/**

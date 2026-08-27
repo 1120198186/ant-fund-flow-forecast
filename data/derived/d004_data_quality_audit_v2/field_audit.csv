@@ -1,0 +1,39 @@
+﻿file,field,observed_dtype,expected_family,type_status,rows,null_count,null_rate,distinct_count,min,max
+user_balance_table.csv,user_id,int32[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,28041,1,28041
+user_balance_table.csv,report_date,datetime64[s],date,PASS,2840421,0,0.0,427,2013-07-01 00:00:00,2014-08-31 00:00:00
+user_balance_table.csv,tBalance,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,1184830,0,104285082
+user_balance_table.csv,yBalance,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,1181103,0,104273402
+user_balance_table.csv,total_purchase_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,115338,0,201768328
+user_balance_table.csv,direct_purchase_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,112373,0,201768328
+user_balance_table.csv,purchase_bal_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,55612,0,201275171
+user_balance_table.csv,purchase_bank_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,71893,0,90973924
+user_balance_table.csv,total_redeem_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,82145,0,102310600
+user_balance_table.csv,consume_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,33918,0,30000000
+user_balance_table.csv,transfer_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,55047,0,102310600
+user_balance_table.csv,tftobal_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,22107,0,29399674
+user_balance_table.csv,tftocard_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,39187,0,102310600
+user_balance_table.csv,share_amt,int64[pyarrow],integer or nullable integer,PASS,2840421,0,0.0,11622,0,17749
+user_balance_table.csv,category1,int64[pyarrow],integer or nullable integer,PASS,2840421,2666682,0.9388333630824445,9440,0,5000000
+user_balance_table.csv,category2,int64[pyarrow],integer or nullable integer,PASS,2840421,2666682,0.9388333630824445,3670,0,5000000
+user_balance_table.csv,category3,int64[pyarrow],integer or nullable integer,PASS,2840421,2666682,0.9388333630824445,80,0,30000000
+user_balance_table.csv,category4,int64[pyarrow],integer or nullable integer,PASS,2840421,2666682,0.9388333630824445,25551,0,5339991
+user_profile_table.csv,user_id,int32[pyarrow],integer or nullable integer,PASS,28041,0,0.0,28041,1,28041
+user_profile_table.csv,sex,int8[pyarrow],integer or nullable integer,PASS,28041,0,0.0,2,0,1
+user_profile_table.csv,city,int64,7-value categorical code,PASS,28041,0,0.0,7,6081949,6581949
+user_profile_table.csv,constellation,category,12-value categorical/string,PASS,28041,0,0.0,12,双子座,金牛座
+mfd_day_share_interest.csv,mfd_date,datetime64[s],date,PASS,427,0,0.0,427,2013-07-01 00:00:00,2014-08-31 00:00:00
+mfd_day_share_interest.csv,mfd_daily_yield,double[pyarrow],numeric,PASS,427,0,0.0,407,1.0993,1.822
+mfd_day_share_interest.csv,mfd_7daily_yield,double[pyarrow],numeric,PASS,427,0,0.0,371,4.116,6.763
+mfd_bank_shibor.csv,mfd_date,datetime64[us],date,PASS,294,0,0.0,294,2013-07-01 00:00:00,2014-08-29 00:00:00
+mfd_bank_shibor.csv,Interest_O_N,float64,numeric,PASS,294,0,0.0,261,1.7,5.23
+mfd_bank_shibor.csv,Interest_1_W,float64,numeric,PASS,294,0,0.0,278,2.211,8.843
+mfd_bank_shibor.csv,Interest_2_W,float64,numeric,PASS,294,0,0.0,274,2.208,8.246
+mfd_bank_shibor.csv,Interest_1_M,float64,numeric,PASS,294,0,0.0,271,3.5675,7.656
+mfd_bank_shibor.csv,Interest_3_M,float64,numeric,PASS,294,0,0.0,235,4.65,5.605
+mfd_bank_shibor.csv,Interest_6_M,float64,numeric,PASS,294,0,0.0,118,4.2166,5.0
+mfd_bank_shibor.csv,Interest_9_M,float64,numeric,PASS,294,0,0.0,109,4.27,5.0
+mfd_bank_shibor.csv,Interest_1_Y,float64,numeric,PASS,294,0,0.0,44,4.4,5.011
+comp_predict_table.csv,column_1,integer,integer,PASS,3,0,0.0,3,,
+comp_predict_table.csv,column_2,integer,integer,PASS,3,0,0.0,3,,
+comp_predict_table.csv,column_3,integer,integer,PASS,3,0,0.0,3,,
+comp_predict_table.csv,column_4,integer,integer,PASS,3,0,0.0,3,,

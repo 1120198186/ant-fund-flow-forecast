@@ -1,0 +1,11 @@
+{
+  "cutoff": "2014-07-01",
+  "columns_checked": [
+    "seasonal_purchase",
+    "seasonal_redeem",
+    "component_purchase",
+    "component_redeem"
+  ],
+  "max_absolute_difference": 0.0,
+  "passed": true
+}

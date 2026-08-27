@@ -1,0 +1,172 @@
+﻿priority,family,feature_name,formula,grain,rationale,leakage_rule
+P0,raw_demographic,sex,sex,user,Stable user segmentation baseline.,Safe as static input; fit categorical encoding inside each fold.
+P0,raw_demographic,city,city,user,Stable user segmentation baseline.,Safe as static input; fit categorical encoding inside each fold.
+P0,raw_demographic,constellation,constellation,user,Stable user segmentation baseline.,Safe as static input; fit categorical encoding inside each fold.
+P0,demographic_cross,sex_x_city,sex + city,user,Captures heterogeneous demographic segments missed by main effects.,Pool cells below 50 training users; create mapping within each fold.
+P0,demographic_cross,sex_x_constellation,sex + constellation,user,Captures heterogeneous demographic segments missed by main effects.,Pool cells below 50 training users; create mapping within each fold.
+P0,demographic_cross,city_x_constellation,city + constellation,user,Captures heterogeneous demographic segments missed by main effects.,Pool cells below 50 training users; create mapping within each fold.
+P1,demographic_cross,sex_x_city_x_constellation,sex + city + constellation,user,Captures heterogeneous demographic segments missed by main effects.,Pool cells below 50 training users; create mapping within each fold.
+P0,rate_lag,mfd_daily_yield_lag1,"lag(mfd_daily_yield, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,mfd_daily_yield_lag7,"lag(mfd_daily_yield, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,mfd_daily_yield_delta1_lag1,"lag(mfd_daily_yield - lag(mfd_daily_yield,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,mfd_daily_yield_delta7_lag1,"lag(mfd_daily_yield - lag(mfd_daily_yield,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,mfd_daily_yield_mean7,"rolling_mean(lag(mfd_daily_yield,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,mfd_daily_yield_mean14,"rolling_mean(lag(mfd_daily_yield,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,mfd_daily_yield_mean28,"rolling_mean(lag(mfd_daily_yield,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,mfd_daily_yield_std7,"rolling_std(lag(mfd_daily_yield,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,mfd_daily_yield_std28,"rolling_std(lag(mfd_daily_yield,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,mfd_7daily_yield_lag1,"lag(mfd_7daily_yield, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,mfd_7daily_yield_lag7,"lag(mfd_7daily_yield, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,mfd_7daily_yield_delta1_lag1,"lag(mfd_7daily_yield - lag(mfd_7daily_yield,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,mfd_7daily_yield_delta7_lag1,"lag(mfd_7daily_yield - lag(mfd_7daily_yield,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,mfd_7daily_yield_mean7,"rolling_mean(lag(mfd_7daily_yield,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,mfd_7daily_yield_mean14,"rolling_mean(lag(mfd_7daily_yield,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,mfd_7daily_yield_mean28,"rolling_mean(lag(mfd_7daily_yield,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,mfd_7daily_yield_std7,"rolling_std(lag(mfd_7daily_yield,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,mfd_7daily_yield_std28,"rolling_std(lag(mfd_7daily_yield,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_O_N_lag1,"lag(Interest_O_N, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_O_N_lag7,"lag(Interest_O_N, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_O_N_delta1_lag1,"lag(Interest_O_N - lag(Interest_O_N,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_O_N_delta7_lag1,"lag(Interest_O_N - lag(Interest_O_N,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_O_N_mean7,"rolling_mean(lag(Interest_O_N,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_O_N_mean14,"rolling_mean(lag(Interest_O_N,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_O_N_mean28,"rolling_mean(lag(Interest_O_N,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_O_N_std7,"rolling_std(lag(Interest_O_N,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_O_N_std28,"rolling_std(lag(Interest_O_N,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_1_W_lag1,"lag(Interest_1_W, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_1_W_lag7,"lag(Interest_1_W, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_1_W_delta1_lag1,"lag(Interest_1_W - lag(Interest_1_W,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_1_W_delta7_lag1,"lag(Interest_1_W - lag(Interest_1_W,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_1_W_mean7,"rolling_mean(lag(Interest_1_W,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_1_W_mean14,"rolling_mean(lag(Interest_1_W,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_1_W_mean28,"rolling_mean(lag(Interest_1_W,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_1_W_std7,"rolling_std(lag(Interest_1_W,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_1_W_std28,"rolling_std(lag(Interest_1_W,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_2_W_lag1,"lag(Interest_2_W, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_2_W_lag7,"lag(Interest_2_W, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_2_W_delta1_lag1,"lag(Interest_2_W - lag(Interest_2_W,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_2_W_delta7_lag1,"lag(Interest_2_W - lag(Interest_2_W,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_2_W_mean7,"rolling_mean(lag(Interest_2_W,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_2_W_mean14,"rolling_mean(lag(Interest_2_W,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_2_W_mean28,"rolling_mean(lag(Interest_2_W,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_2_W_std7,"rolling_std(lag(Interest_2_W,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_2_W_std28,"rolling_std(lag(Interest_2_W,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_1_M_lag1,"lag(Interest_1_M, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_1_M_lag7,"lag(Interest_1_M, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_1_M_delta1_lag1,"lag(Interest_1_M - lag(Interest_1_M,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_1_M_delta7_lag1,"lag(Interest_1_M - lag(Interest_1_M,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_1_M_mean7,"rolling_mean(lag(Interest_1_M,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_1_M_mean14,"rolling_mean(lag(Interest_1_M,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_1_M_mean28,"rolling_mean(lag(Interest_1_M,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_1_M_std7,"rolling_std(lag(Interest_1_M,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_1_M_std28,"rolling_std(lag(Interest_1_M,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_3_M_lag1,"lag(Interest_3_M, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_3_M_lag7,"lag(Interest_3_M, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_3_M_delta1_lag1,"lag(Interest_3_M - lag(Interest_3_M,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_3_M_delta7_lag1,"lag(Interest_3_M - lag(Interest_3_M,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_3_M_mean7,"rolling_mean(lag(Interest_3_M,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_3_M_mean14,"rolling_mean(lag(Interest_3_M,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_3_M_mean28,"rolling_mean(lag(Interest_3_M,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_3_M_std7,"rolling_std(lag(Interest_3_M,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_3_M_std28,"rolling_std(lag(Interest_3_M,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_6_M_lag1,"lag(Interest_6_M, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_6_M_lag7,"lag(Interest_6_M, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_6_M_delta1_lag1,"lag(Interest_6_M - lag(Interest_6_M,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_6_M_delta7_lag1,"lag(Interest_6_M - lag(Interest_6_M,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_6_M_mean7,"rolling_mean(lag(Interest_6_M,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_6_M_mean14,"rolling_mean(lag(Interest_6_M,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_6_M_mean28,"rolling_mean(lag(Interest_6_M,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_6_M_std7,"rolling_std(lag(Interest_6_M,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_6_M_std28,"rolling_std(lag(Interest_6_M,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_9_M_lag1,"lag(Interest_9_M, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_9_M_lag7,"lag(Interest_9_M, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_9_M_delta1_lag1,"lag(Interest_9_M - lag(Interest_9_M,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_9_M_delta7_lag1,"lag(Interest_9_M - lag(Interest_9_M,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_9_M_mean7,"rolling_mean(lag(Interest_9_M,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_9_M_mean14,"rolling_mean(lag(Interest_9_M,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_9_M_mean28,"rolling_mean(lag(Interest_9_M,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_9_M_std7,"rolling_std(lag(Interest_9_M,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_9_M_std28,"rolling_std(lag(Interest_9_M,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_lag,Interest_1_Y_lag1,"lag(Interest_1_Y, 1)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_lag,Interest_1_Y_lag7,"lag(Interest_1_Y, 7)",date,Tests delayed response to published rates.,Only values published by forecast cutoff may be used.
+P0,rate_change,Interest_1_Y_delta1_lag1,"lag(Interest_1_Y - lag(Interest_1_Y,1), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P0,rate_change,Interest_1_Y_delta7_lag1,"lag(Interest_1_Y - lag(Interest_1_Y,7), 1)",date,Captures rate direction and short-term repricing.,"Difference first, then lag the result before forecast use."
+P1,rate_rolling,Interest_1_Y_mean7,"rolling_mean(lag(Interest_1_Y,1), 7)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_1_Y_mean14,"rolling_mean(lag(Interest_1_Y,1), 14)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_rolling,Interest_1_Y_mean28,"rolling_mean(lag(Interest_1_Y,1), 28)",date,Captures rate regime rather than one-day noise.,Shift before rolling; never center the window.
+P1,rate_volatility,Interest_1_Y_std7,"rolling_std(lag(Interest_1_Y,1), 7)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P1,rate_volatility,Interest_1_Y_std28,"rolling_std(lag(Interest_1_Y,1), 28)",date,Captures stable versus volatile rate regimes.,Shift before rolling and fit any normalization inside the fold.
+P0,rate_spread_curve,alipay_vs_shibor_on,"lag(mfd_7daily_yield - Interest_O_N, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,rate_spread_curve,alipay_vs_shibor_1w,"lag(mfd_7daily_yield - Interest_1_W, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,rate_spread_curve,alipay_vs_shibor_1m,"lag(mfd_7daily_yield - Interest_1_M, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,rate_spread_curve,alipay_vs_shibor_3m,"lag(mfd_7daily_yield - Interest_3_M, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,rate_spread_curve,shibor_slope_1y_on,"lag(Interest_1_Y - Interest_O_N, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,rate_spread_curve,shibor_slope_3m_on,"lag(Interest_3_M - Interest_O_N, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,rate_spread_curve,shibor_slope_1m_1w,"lag(Interest_1_M - Interest_1_W, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,rate_spread_curve,shibor_curve_curvature,"lag(2 * Interest_3_M - Interest_O_N - Interest_1_Y, 1)",date,Measures relative attractiveness and term-structure regime.,Use lagged published rates; same-day version is descriptive only.
+P0,target_history,total_purchase_amt_lag1,"lag(daily_sum(total_purchase_amt), 1)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_purchase_amt_lag7,"lag(daily_sum(total_purchase_amt), 7)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_purchase_amt_lag14,"lag(daily_sum(total_purchase_amt), 14)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_purchase_amt_lag28,"lag(daily_sum(total_purchase_amt), 28)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_purchase_amt_rolling_mean7,"rolling_mean(lag(daily_sum(total_purchase_amt),1), 7)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,total_purchase_amt_rolling_mean14,"rolling_mean(lag(daily_sum(total_purchase_amt),1), 14)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,total_purchase_amt_rolling_mean28,"rolling_mean(lag(daily_sum(total_purchase_amt),1), 28)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,total_redeem_amt_lag1,"lag(daily_sum(total_redeem_amt), 1)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_redeem_amt_lag7,"lag(daily_sum(total_redeem_amt), 7)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_redeem_amt_lag14,"lag(daily_sum(total_redeem_amt), 14)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_redeem_amt_lag28,"lag(daily_sum(total_redeem_amt), 28)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,total_redeem_amt_rolling_mean7,"rolling_mean(lag(daily_sum(total_redeem_amt),1), 7)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,total_redeem_amt_rolling_mean14,"rolling_mean(lag(daily_sum(total_redeem_amt),1), 14)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,total_redeem_amt_rolling_mean28,"rolling_mean(lag(daily_sum(total_redeem_amt),1), 28)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,direct_purchase_amt_lag1,"lag(daily_sum(direct_purchase_amt), 1)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,direct_purchase_amt_lag7,"lag(daily_sum(direct_purchase_amt), 7)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,direct_purchase_amt_lag14,"lag(daily_sum(direct_purchase_amt), 14)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,direct_purchase_amt_lag28,"lag(daily_sum(direct_purchase_amt), 28)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,direct_purchase_amt_rolling_mean7,"rolling_mean(lag(daily_sum(direct_purchase_amt),1), 7)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,direct_purchase_amt_rolling_mean14,"rolling_mean(lag(daily_sum(direct_purchase_amt),1), 14)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,direct_purchase_amt_rolling_mean28,"rolling_mean(lag(daily_sum(direct_purchase_amt),1), 28)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,purchase_bank_amt_lag1,"lag(daily_sum(purchase_bank_amt), 1)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,purchase_bank_amt_lag7,"lag(daily_sum(purchase_bank_amt), 7)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,purchase_bank_amt_lag14,"lag(daily_sum(purchase_bank_amt), 14)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,purchase_bank_amt_lag28,"lag(daily_sum(purchase_bank_amt), 28)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,purchase_bank_amt_rolling_mean7,"rolling_mean(lag(daily_sum(purchase_bank_amt),1), 7)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,purchase_bank_amt_rolling_mean14,"rolling_mean(lag(daily_sum(purchase_bank_amt),1), 14)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,purchase_bank_amt_rolling_mean28,"rolling_mean(lag(daily_sum(purchase_bank_amt),1), 28)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,transfer_amt_lag1,"lag(daily_sum(transfer_amt), 1)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,transfer_amt_lag7,"lag(daily_sum(transfer_amt), 7)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,transfer_amt_lag14,"lag(daily_sum(transfer_amt), 14)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,transfer_amt_lag28,"lag(daily_sum(transfer_amt), 28)",date,Core autoregressive signal for daily forecasting.,Compute independently inside each rolling split.
+P0,target_history,transfer_amt_rolling_mean7,"rolling_mean(lag(daily_sum(transfer_amt),1), 7)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,transfer_amt_rolling_mean14,"rolling_mean(lag(daily_sum(transfer_amt),1), 14)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,target_history,transfer_amt_rolling_mean28,"rolling_mean(lag(daily_sum(transfer_amt),1), 28)",date,Captures recent level and seasonality.,Shift one day before rolling.
+P0,behavior_composition,bank_purchase_share_lag1,"lag(daily(purchase_bank_amt / direct_purchase_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P0,behavior_composition,balance_purchase_share_lag1,"lag(daily(purchase_bal_amt / direct_purchase_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P0,behavior_composition,share_purchase_share_lag1,"lag(daily(share_amt / total_purchase_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P0,behavior_composition,transfer_redeem_share_lag1,"lag(daily(transfer_amt / total_redeem_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P0,behavior_composition,consume_redeem_share_lag1,"lag(daily(consume_amt / total_redeem_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P0,behavior_composition,transfer_to_card_share_lag1,"lag(daily(tftocard_amt / transfer_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P0,behavior_composition,transfer_to_balance_share_lag1,"lag(daily(tftobal_amt / transfer_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P0,behavior_composition,net_flow_lag1,"lag(daily(total_purchase_amt - total_redeem_amt), 1)",date,Summarizes payment-channel and redemption composition.,Same-day formula is target leakage; only lagged/rolling forms are predictive.
+P1,segment_history,sex_total_purchase_amt_rolling7,"rolling_mean(lag(daily_sum(total_purchase_amt) by sex,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,sex_total_redeem_amt_rolling7,"rolling_mean(lag(daily_sum(total_redeem_amt) by sex,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,sex_direct_purchase_amt_rolling7,"rolling_mean(lag(daily_sum(direct_purchase_amt) by sex,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,sex_purchase_bank_amt_rolling7,"rolling_mean(lag(daily_sum(purchase_bank_amt) by sex,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,sex_transfer_amt_rolling7,"rolling_mean(lag(daily_sum(transfer_amt) by sex,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,city_total_purchase_amt_rolling7,"rolling_mean(lag(daily_sum(total_purchase_amt) by city,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,city_total_redeem_amt_rolling7,"rolling_mean(lag(daily_sum(total_redeem_amt) by city,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,city_direct_purchase_amt_rolling7,"rolling_mean(lag(daily_sum(direct_purchase_amt) by city,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,city_purchase_bank_amt_rolling7,"rolling_mean(lag(daily_sum(purchase_bank_amt) by city,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,city_transfer_amt_rolling7,"rolling_mean(lag(daily_sum(transfer_amt) by city,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,constellation_total_purchase_amt_rolling7,"rolling_mean(lag(daily_sum(total_purchase_amt) by constellation,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,constellation_total_redeem_amt_rolling7,"rolling_mean(lag(daily_sum(total_redeem_amt) by constellation,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,constellation_direct_purchase_amt_rolling7,"rolling_mean(lag(daily_sum(direct_purchase_amt) by constellation,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,constellation_purchase_bank_amt_rolling7,"rolling_mean(lag(daily_sum(purchase_bank_amt) by constellation,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,segment_history,constellation_transfer_amt_rolling7,"rolling_mean(lag(daily_sum(transfer_amt) by constellation,1),7)",date x segment,Tests whether segment mix contributes incremental forecast signal.,Aggregate and shift before joining forecast date.
+P1,cross_domain_interaction,rate_spread_x_bank_share,alipay_vs_shibor_1w_lag1 * bank_purchase_share_lag1,date,Tests context-dependent response to rates and user mix.,All continuous inputs must be lagged before interaction.
+P1,cross_domain_interaction,rate_change_x_transfer_share,delta7(mfd_7daily_yield)_lag1 * transfer_redeem_share_lag1,date,Tests context-dependent response to rates and user mix.,All continuous inputs must be lagged before interaction.
+P1,cross_domain_interaction,weekday_x_rate_spread,weekday * alipay_vs_shibor_1w_lag1,date,Tests context-dependent response to rates and user mix.,All continuous inputs must be lagged before interaction.
+P1,cross_domain_interaction,new_user_share_x_rate,new_user_share_lag1 * mfd_7daily_yield_lag1,date,Tests context-dependent response to rates and user mix.,All continuous inputs must be lagged before interaction.
+P2_NOT_NOW,defer_or_reject,all_pairwise_polynomials,every numeric pair and square,mixed,"High overfit, dimensionality, or leakage risk at current stage.",Do not use until a fold-safe pipeline and incremental-value evidence exist.
+P2_NOT_NOW,defer_or_reject,high_cardinality_user_id_cross,user_id x demographic x rate,mixed,"High overfit, dimensionality, or leakage risk at current stage.",Do not use until a fold-safe pipeline and incremental-value evidence exist.
+P2_NOT_NOW,defer_or_reject,full_period_target_encoding,category mean target on all dates,mixed,"High overfit, dimensionality, or leakage risk at current stage.",Do not use until a fold-safe pipeline and incremental-value evidence exist.
+P2_NOT_NOW,defer_or_reject,same_day_component_ratios,ratios built from forecast-day outcomes,mixed,"High overfit, dimensionality, or leakage risk at current stage.",Do not use until a fold-safe pipeline and incremental-value evidence exist.

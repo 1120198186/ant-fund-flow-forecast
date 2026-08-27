@@ -1,0 +1,14 @@
+{
+  "purchase_seasonal_weight": 1.0,
+  "redeem_seasonal_weight": 1.0,
+  "component_weight_is_one_minus_seasonal": true,
+  "selection_rule": "3-7月三次评分中位数、最差折、加权误差、超阈值天数依次排序",
+  "tuning_windows": [
+    "rolling_2014_03",
+    "rolling_2014_04",
+    "rolling_2014_05",
+    "rolling_2014_06",
+    "rolling_2014_07"
+  ],
+  "quasi_holdout_window": "holdout_2014_08"
+}

@@ -1,0 +1,182 @@
+{
+  "dataset_version": "d003_validated_data_layer_v2",
+  "generator_version": 1,
+  "generated_at": "2026-08-24T03:09:13.620733Z",
+  "generator": "scripts/build_data_foundation.py",
+  "command": ".venv\\Scripts\\python.exe scripts\\build_data_foundation.py",
+  "competition_data_cutoff": "2014-08-31",
+  "sort_contract": {
+    "user_balance_daily.parquet": [
+      "report_date",
+      "user_id"
+    ],
+    "user_profile.parquet": [
+      "user_id"
+    ],
+    "fund_yield_daily.parquet": [
+      "mfd_date"
+    ],
+    "shibor_daily.parquet": [
+      "mfd_date"
+    ],
+    "daily_aggregate.parquet": [
+      "report_date"
+    ]
+  },
+  "transformations": {
+    "category_nulls": "preserved; companion *_filled columns use zero",
+    "shibor_calendar": "daily historical forward fill only",
+    "balance_reconciliation": "delta exposed; official values unchanged",
+    "extreme_values": "preserved; thresholds belong to fold-local modeling or audit only"
+  },
+  "sources": [
+    {
+      "path": "data/raw/official/comp_predict_table.csv",
+      "sha256": "3feab0724a02f3fdf3e4ddb255d11aa66a2f2911904e80f4c5ac99ab9e893e7a"
+    },
+    {
+      "path": "data/raw/official/mfd_bank_shibor.csv",
+      "sha256": "b6808b36290262921db2bfeb9b97887aa0fbf061b789a85533fbd1708de478b3"
+    },
+    {
+      "path": "data/raw/official/mfd_day_share_interest.csv",
+      "sha256": "1bad7036a0aad3b90ef8d699795d7b1015b89f22408e0e638e125b2f1887599d"
+    },
+    {
+      "path": "data/raw/official/user_balance_table.csv",
+      "sha256": "0ffa2b34e770786b2d0c571ea5007c08e4140003a640e94d9e595ef83d8da996"
+    },
+    {
+      "path": "data/raw/official/user_profile_table.csv",
+      "sha256": "647c30abcc6937484f13e194c6b269b1ac65d9f06e1967189ab2c68a7e9f37cc"
+    }
+  ],
+  "files": [
+    {
+      "path": "user_balance_daily.parquet",
+      "bytes": 50287689,
+      "sha256": "5c5c9b868b2c9d36a4314f131aea5419eecce0cfbb14ba9f7abee9acb3eae596",
+      "rows": 2840421,
+      "row_groups": 22,
+      "schema": {
+        "user_id": "int32",
+        "report_date": "date32[day]",
+        "tBalance": "int64",
+        "yBalance": "int64",
+        "total_purchase_amt": "int64",
+        "direct_purchase_amt": "int64",
+        "purchase_bal_amt": "int64",
+        "purchase_bank_amt": "int64",
+        "total_redeem_amt": "int64",
+        "consume_amt": "int64",
+        "transfer_amt": "int64",
+        "tftobal_amt": "int64",
+        "tftocard_amt": "int64",
+        "share_amt": "int64",
+        "category1": "int64",
+        "category2": "int64",
+        "category3": "int64",
+        "category4": "int64",
+        "category1_filled": "int64",
+        "category2_filled": "int64",
+        "category3_filled": "int64",
+        "category4_filled": "int64",
+        "balance_reconciliation_delta": "int64",
+        "balance_identity_ok": "bool",
+        "has_consume": "bool",
+        "has_consume_breakdown": "bool",
+        "purchase_log1p": "float",
+        "redeem_log1p": "float"
+      }
+    },
+    {
+      "path": "user_profile.parquet",
+      "bytes": 149906,
+      "sha256": "163d814d97784307fb56d161b2c09749ea5fa2354284fa36690f92bc9e638654",
+      "rows": 28041,
+      "row_groups": 1,
+      "schema": {
+        "user_id": "int32",
+        "sex": "int8",
+        "city": "int64",
+        "constellation": "dictionary<values=string, indices=int8, ordered=0>"
+      }
+    },
+    {
+      "path": "fund_yield_daily.parquet",
+      "bytes": 9157,
+      "sha256": "f26c820f9ce50e87ff6f3b2fd259feee61b42fa394d6277591c25e7fc4cf2a61",
+      "rows": 427,
+      "row_groups": 1,
+      "schema": {
+        "mfd_date": "date32[day]",
+        "mfd_daily_yield": "double",
+        "mfd_7daily_yield": "double"
+      }
+    },
+    {
+      "path": "shibor_daily.parquet",
+      "bytes": 21022,
+      "sha256": "0117ce7a6f0e1dc47d4c3256536985403977ce186336e3688822fce0f88df592",
+      "rows": 427,
+      "row_groups": 1,
+      "schema": {
+        "mfd_date": "date32[day]",
+        "Interest_O_N": "double",
+        "Interest_1_W": "double",
+        "Interest_2_W": "double",
+        "Interest_1_M": "double",
+        "Interest_3_M": "double",
+        "Interest_6_M": "double",
+        "Interest_9_M": "double",
+        "Interest_1_Y": "double",
+        "is_shibor_observed": "bool",
+        "days_since_observation": "int16"
+      }
+    },
+    {
+      "path": "daily_aggregate.parquet",
+      "bytes": 53295,
+      "sha256": "f1776bffd1540e2bd5a2e82359b23b4cd0aabf412330eb3c03ec55edf1dc1984",
+      "rows": 427,
+      "row_groups": 1,
+      "schema": {
+        "report_date": "date32[day]",
+        "rows": "int64",
+        "users": "int64",
+        "total_balance": "int64",
+        "total_purchase_amt": "int64",
+        "total_redeem_amt": "int64",
+        "purchase_users": "int64",
+        "redeem_users": "int64",
+        "balance_identity_failures": "int64",
+        "new_users": "int32",
+        "purchase_log1p": "double",
+        "redeem_log1p": "double",
+        "mfd_daily_yield": "double",
+        "mfd_7daily_yield": "double",
+        "Interest_O_N": "double",
+        "Interest_1_W": "double",
+        "Interest_2_W": "double",
+        "Interest_1_M": "double",
+        "Interest_3_M": "double",
+        "Interest_6_M": "double",
+        "Interest_9_M": "double",
+        "Interest_1_Y": "double",
+        "is_shibor_observed": "bool",
+        "days_since_observation": "int16"
+      }
+    }
+  ],
+  "generator_sha256": "2c07f7e6ce37a4ae1af75b9382767d02885397dc540990f1173383f7a01445a0",
+  "runtime": {
+    "python": "3.12.13",
+    "pandas": "3.0.1",
+    "pyarrow": "25.0.1"
+  },
+  "git": {
+    "commit": "5672785928794cae37836bfd9d7d3c587946ebb7",
+    "dirty": true
+  },
+  "elapsed_seconds": 4.361
+}

@@ -1,0 +1,20 @@
+{
+  "split_id": "backtest_2013_09_v1",
+  "status": "diagnostic_stress_test",
+  "unit": "calendar_day",
+  "training_window": {
+    "start": "2013-07-01",
+    "end": "2013-08-31"
+  },
+  "holdout_window": {
+    "start": "2013-09-01",
+    "end": "2013-09-30"
+  },
+  "targets": [
+    "total_purchase_amt",
+    "total_redeem_amt"
+  ],
+  "aggregation": "sum_by_report_date",
+  "source": "data/raw/official/user_balance_table.csv",
+  "notes": "A September calendar stress test. It has only 62 prior training days, so it is not directly comparable with the mature 2014-08 holdout."
+}

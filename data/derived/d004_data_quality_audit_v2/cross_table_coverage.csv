@@ -1,0 +1,10 @@
+﻿coverage_check,count,expectation,status
+balance users missing profile,0,must be 0,PASS
+profile users absent from balance,0,must be 0,PASS
+balance dates missing fund yield,0,must be 0,PASS
+fund yield dates absent from balance,0,must be 0,PASS
+balance dates without observed SHIBOR,133,informational: weekends/holidays expected,INFO
+balance dates missing derived daily SHIBOR,0,must be 0,PASS
+profile join unmatched or row inflation,0,must be 0,PASS
+profile join purchase total drift,0,must be 0,PASS
+profile join redeem total drift,0,must be 0,PASS

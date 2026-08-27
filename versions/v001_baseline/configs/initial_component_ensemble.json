@@ -1,0 +1,20 @@
+{
+  "run_id": "initial_20260825",
+  "seed": 20260825,
+  "forecast_horizon": 30,
+  "minimum_history_days": 28,
+  "training_half_life_days": 180.0,
+  "ridge_alpha": 12.0,
+  "ensemble_weight_step": 0.25,
+  "tuning_windows": [
+    "rolling_2014_03",
+    "rolling_2014_04",
+    "rolling_2014_05",
+    "rolling_2014_06",
+    "rolling_2014_07"
+  ],
+  "locked_window": "holdout_2014_08",
+  "stress_window": "backtest_2013_09",
+  "final_cutoff": "2014-09-01",
+  "final_end": "2014-09-30"
+}

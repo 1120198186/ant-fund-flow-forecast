@@ -1,0 +1,7 @@
+﻿constraint,violation_count,severity,status
+user_id positive integer,0,CRITICAL,PASS
+source amounts non-negative,0,HIGH,PASS
+"sex domain subset of {0,1}",0,MEDIUM,PASS
+city has exactly 7 non-null codes,0,MEDIUM,PASS
+constellation has exactly 12 non-null values,0,MEDIUM,PASS
+yield and SHIBOR values finite and positive,0,HIGH,PASS

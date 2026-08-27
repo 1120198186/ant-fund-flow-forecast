@@ -1,0 +1,302 @@
+{
+  "rolling_2014_03": {
+    "log_end_balance": {
+      "median": 11.413834145659244,
+      "scale": 7.204114002862651
+    },
+    "log_direct_90": {
+      "median": 12.741817197738586,
+      "scale": 5.301593991718418
+    },
+    "log_redeem_90": {
+      "median": 11.290344255512196,
+      "scale": 6.741760411975857
+    },
+    "log_consume_90": {
+      "median": 9.129021850798594,
+      "scale": 11.78335327995213
+    },
+    "direct_days_per_30_90": {
+      "median": 1.0,
+      "scale": 1.6666666666666667
+    },
+    "redeem_days_per_30_90": {
+      "median": 0.6666666666666666,
+      "scale": 2.0
+    },
+    "consume_days_per_30_90": {
+      "median": 0.3333333333333333,
+      "scale": 1.6666666666666667
+    },
+    "recency_active_scaled": {
+      "median": 0.12222222222222222,
+      "scale": 0.4222222222222222
+    },
+    "roundtrip_ratio_90": {
+      "median": 0.0010059939640362158,
+      "scale": 0.5145822407222438
+    },
+    "consume_share_90": {
+      "median": 0.1154175860633198,
+      "scale": 1.0
+    },
+    "net_flow_share_90": {
+      "median": 0.08232301606068934,
+      "scale": 0.7209532724208347
+    },
+    "bank_purchase_share_90": {
+      "median": 0.9481429123757568,
+      "scale": 1.0
+    }
+  },
+  "rolling_2014_04": {
+    "log_end_balance": {
+      "median": 11.147512421444125,
+      "scale": 7.000595550606773
+    },
+    "log_direct_90": {
+      "median": 12.879283659004544,
+      "scale": 4.971416349162464
+    },
+    "log_redeem_90": {
+      "median": 11.51838055484711,
+      "scale": 6.2675193759729595
+    },
+    "log_consume_90": {
+      "median": 8.824824939175638,
+      "scale": 11.775297421715827
+    },
+    "direct_days_per_30_90": {
+      "median": 0.6666666666666666,
+      "scale": 1.3333333333333335
+    },
+    "redeem_days_per_30_90": {
+      "median": 0.6666666666666666,
+      "scale": 2.333333333333333
+    },
+    "consume_days_per_30_90": {
+      "median": 0.3333333333333333,
+      "scale": 1.6666666666666667
+    },
+    "recency_active_scaled": {
+      "median": 0.14444444444444443,
+      "scale": 0.39999999999999997
+    },
+    "roundtrip_ratio_90": {
+      "median": 0.046630181770956416,
+      "scale": 0.648655264590198
+    },
+    "consume_share_90": {
+      "median": 0.053332575004954495,
+      "scale": 0.9092299556280142
+    },
+    "net_flow_share_90": {
+      "median": 0.03288191431485682,
+      "scale": 0.6274424648412766
+    },
+    "bank_purchase_share_90": {
+      "median": 0.9869341864461609,
+      "scale": 0.9975625805719385
+    }
+  },
+  "rolling_2014_05": {
+    "log_end_balance": {
+      "median": 10.68832471050929,
+      "scale": 7.286261159115551
+    },
+    "log_direct_90": {
+      "median": 12.44483556273976,
+      "scale": 5.292112278994104
+    },
+    "log_redeem_90": {
+      "median": 11.535523175520886,
+      "scale": 6.185556387667125
+    },
+    "log_consume_90": {
+      "median": 9.116304366471734,
+      "scale": 11.842187974266979
+    },
+    "direct_days_per_30_90": {
+      "median": 0.6666666666666666,
+      "scale": 1.3333333333333335
+    },
+    "redeem_days_per_30_90": {
+      "median": 1.0,
+      "scale": 2.333333333333333
+    },
+    "consume_days_per_30_90": {
+      "median": 0.3333333333333333,
+      "scale": 2.0
+    },
+    "recency_active_scaled": {
+      "median": 0.16666666666666666,
+      "scale": 0.4888888888888889
+    },
+    "roundtrip_ratio_90": {
+      "median": 0.03843371708083327,
+      "scale": 0.6246239059295184
+    },
+    "consume_share_90": {
+      "median": 0.06736625211356942,
+      "scale": 0.9218862629901867
+    },
+    "net_flow_share_90": {
+      "median": 0.005559794783726295,
+      "scale": 0.4254342887356941
+    },
+    "bank_purchase_share_90": {
+      "median": 0.968074718229925,
+      "scale": 1.0
+    }
+  },
+  "rolling_2014_06": {
+    "log_end_balance": {
+      "median": 10.464771835130605,
+      "scale": 7.389507986459563
+    },
+    "log_direct_90": {
+      "median": 11.94134834505865,
+      "scale": 7.307589741724078
+    },
+    "log_redeem_90": {
+      "median": 11.552732378413502,
+      "scale": 6.782933122679072
+    },
+    "log_consume_90": {
+      "median": 9.175436175366116,
+      "scale": 11.92201397536655
+    },
+    "direct_days_per_30_90": {
+      "median": 0.6666666666666666,
+      "scale": 1.3333333333333335
+    },
+    "redeem_days_per_30_90": {
+      "median": 1.0,
+      "scale": 2.6666666666666665
+    },
+    "consume_days_per_30_90": {
+      "median": 0.3333333333333333,
+      "scale": 2.0
+    },
+    "recency_active_scaled": {
+      "median": 0.18888888888888888,
+      "scale": 0.6000000000000001
+    },
+    "roundtrip_ratio_90": {
+      "median": 0.011318587909369293,
+      "scale": 0.5796762062262328
+    },
+    "consume_share_90": {
+      "median": 0.07477498134984911,
+      "scale": 0.9247047322512796
+    },
+    "net_flow_share_90": {
+      "median": 0.0,
+      "scale": 0.34399146177586637
+    },
+    "bank_purchase_share_90": {
+      "median": 0.8779513493345674,
+      "scale": 1.0
+    }
+  },
+  "rolling_2014_07": {
+    "log_end_balance": {
+      "median": 10.279952708512134,
+      "scale": 7.336750452425058
+    },
+    "log_direct_90": {
+      "median": 11.520615817023312,
+      "scale": 14.033275470295827
+    },
+    "log_redeem_90": {
+      "median": 11.40722588610292,
+      "scale": 8.520379095778377
+    },
+    "log_consume_90": {
+      "median": 9.124945689540336,
+      "scale": 11.958924514070944
+    },
+    "direct_days_per_30_90": {
+      "median": 0.6666666666666666,
+      "scale": 1.6666666666666667
+    },
+    "redeem_days_per_30_90": {
+      "median": 1.0,
+      "scale": 2.6666666666666665
+    },
+    "consume_days_per_30_90": {
+      "median": 0.3333333333333333,
+      "scale": 2.0
+    },
+    "recency_active_scaled": {
+      "median": 0.19444444444444445,
+      "scale": 0.6777777777777778
+    },
+    "roundtrip_ratio_90": {
+      "median": 0.0,
+      "scale": 0.5362494806478739
+    },
+    "consume_share_90": {
+      "median": 0.08294950346320903,
+      "scale": 0.9564634627093287
+    },
+    "net_flow_share_90": {
+      "median": 0.0,
+      "scale": 0.29053420878023273
+    },
+    "bank_purchase_share_90": {
+      "median": 0.7266202475195638,
+      "scale": 1.0
+    }
+  },
+  "holdout_2014_08": {
+    "log_end_balance": {
+      "median": 10.039154163957662,
+      "scale": 7.28583309662892
+    },
+    "log_direct_90": {
+      "median": 11.375523735100938,
+      "scale": 13.941905728212493
+    },
+    "log_redeem_90": {
+      "median": 11.300350865005253,
+      "scale": 13.824422726173538
+    },
+    "log_consume_90": {
+      "median": 8.839421607620602,
+      "scale": 11.942637420747392
+    },
+    "direct_days_per_30_90": {
+      "median": 0.6666666666666666,
+      "scale": 1.6666666666666667
+    },
+    "redeem_days_per_30_90": {
+      "median": 1.0,
+      "scale": 3.0
+    },
+    "consume_days_per_30_90": {
+      "median": 0.3333333333333333,
+      "scale": 2.0
+    },
+    "recency_active_scaled": {
+      "median": 0.2222222222222222,
+      "scale": 0.7666666666666667
+    },
+    "roundtrip_ratio_90": {
+      "median": 0.0,
+      "scale": 0.5146989009950007
+    },
+    "consume_share_90": {
+      "median": 0.06465203558302392,
+      "scale": 0.9232246607810035
+    },
+    "net_flow_share_90": {
+      "median": 0.0,
+      "scale": 0.23839758886668105
+    },
+    "bank_purchase_share_90": {
+      "median": 0.5593407167940329,
+      "scale": 1.0
+    }
+  }
+}
